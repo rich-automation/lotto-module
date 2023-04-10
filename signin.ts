@@ -1,7 +1,6 @@
-// import puppeteer from "puppeteer";
-const puppeteer = require("puppeteer");
+import puppeteer from "puppeteer";
 
-(async () => {
+export const signIn = async (id: string, password: string) => {
   const browser = await puppeteer.launch({
     headless: false,
     args: ["--window-size-1920,1080"],
@@ -23,8 +22,8 @@ const puppeteer = require("puppeteer");
   // Set screen size
   await page.setViewport({ width: 1080, height: 1024 });
 
-  await page.type(id_input, "YOUR_ID");
-  await page.type(password_input, "YOUR_PASSWORD");
+  await page.type(id_input, id);
+  await page.type(password_input, password);
   await page.click(login_button);
 
   page.on("dialog", async (dialog) => {
@@ -49,4 +48,4 @@ const puppeteer = require("puppeteer");
   });
 
   //   await browser.close();
-})();
+};

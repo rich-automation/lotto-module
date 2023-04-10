@@ -1,5 +1,13 @@
 {
+  "scripts": {
+    "build": "tsc --build",
+    "start": "npx ts-node app.ts"
+  },
   "dependencies": {
     "puppeteer": "^19.8.5"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
   }
 }
