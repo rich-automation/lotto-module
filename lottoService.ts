@@ -1,5 +1,6 @@
 import { BrowserController } from "./browserController";
 import { Dialog } from "puppeteer";
+import { SELECTORS } from "./constants/selectors";
 
 interface LottoServiceInterface {
   signIn(id: string, password: string): void;
@@ -15,13 +16,6 @@ export class LottoService implements LottoServiceInterface {
   });
 
   async signIn(id: string, password: string): Promise<void> {
-    const LOGIN_URL = "https://dhlottery.co.kr/user.do?method=login&returnUrl=";
-    const ID_INPUT_SELECTOR = "#userId";
-    const PWD_INPUT_SELECTOR =
-      "#article > div:nth-child(2) > div > form > div > div.inner > fieldset > div.form > input[type=password]:nth-child(2)";
-    const LOGIN_BUTTON_SELECTOR =
-      "#article > div:nth-child(2) > div > form > div > div.inner > fieldset > div.form > a";
-
     const page = await this.BrowserController.getNewPage();
 
     await this.BrowserController.setViewPortSize(page, {
@@ -30,13 +24,24 @@ export class LottoService implements LottoServiceInterface {
     });
 
     await Promise.all([
-      this.BrowserController.navigateWithUrl(page, LOGIN_URL),
+      this.BrowserController.navigateWithUrl(page, SELECTORS.LOGIN_URL),
       this.BrowserController.waitForNavigation(page),
     ]);
 
-    await this.BrowserController.fillInput(page, ID_INPUT_SELECTOR, id);
-    await this.BrowserController.fillInput(page, PWD_INPUT_SELECTOR, password);
-    await this.BrowserController.clickForm(page, LOGIN_BUTTON_SELECTOR);
+    await this.BrowserController.fillInput(
+      page,
+      SELECTORS.ID_INPUT_SELECTOR,
+      id
+    );
+    await this.BrowserController.fillInput(
+      page,
+      SELECTORS.PWD_INPUT_SELECTOR,
+      password
+    );
+    await this.BrowserController.clickForm(
+      page,
+      SELECTORS.LOGIN_BUTTON_SELECTOR
+    );
 
     const browser = await this.BrowserController.getBrowser();
 
@@ -55,6 +60,7 @@ export class LottoService implements LottoServiceInterface {
       this.BrowserController.waitForTime(page, 1000),
     ]);
 
+    // 팝업 제거용
     await this.BrowserController.cleanPages(browser, [1]);
   }
 
