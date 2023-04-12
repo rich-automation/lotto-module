@@ -18,30 +18,22 @@ export class LottoService implements LottoServiceInterface {
   async signIn(id: string, password: string): Promise<void> {
     const page = await this.BrowserController.getNewPage();
 
-    await this.BrowserController.setViewPortSize(page, {
+    await this.BrowserController.setViewPortSize({
       width: 1080,
       height: 1024,
     });
 
     await Promise.all([
-      this.BrowserController.navigateWithUrl(page, SELECTORS.LOGIN_URL),
-      this.BrowserController.waitForNavigation(page),
+      this.BrowserController.navigateWithUrl(SELECTORS.LOGIN_URL),
+      this.BrowserController.waitForNavigation(),
     ]);
 
+    await this.BrowserController.fillInput(SELECTORS.ID_INPUT_SELECTOR, id);
     await this.BrowserController.fillInput(
-      page,
-      SELECTORS.ID_INPUT_SELECTOR,
-      id
-    );
-    await this.BrowserController.fillInput(
-      page,
       SELECTORS.PWD_INPUT_SELECTOR,
       password
     );
-    await this.BrowserController.clickForm(
-      page,
-      SELECTORS.LOGIN_BUTTON_SELECTOR
-    );
+    await this.BrowserController.clickForm(SELECTORS.LOGIN_BUTTON_SELECTOR);
 
     const browser = await this.BrowserController.getBrowser();
 
@@ -53,15 +45,15 @@ export class LottoService implements LottoServiceInterface {
       }
     };
 
-    await this.BrowserController.onShowDialog(page, onShowDialog);
+    await this.BrowserController.onShowDialog(onShowDialog);
 
     await Promise.all([
-      this.BrowserController.waitForNavigation(page),
-      this.BrowserController.waitForTime(page, 1000),
+      this.BrowserController.waitForNavigation(),
+      this.BrowserController.waitForTime(1000),
     ]);
 
     // 팝업 제거용
-    await this.BrowserController.cleanPages(browser, [1]);
+    await this.BrowserController.cleanPages([1]);
   }
 
   async purchase(count: number): Promise<number[][]> {

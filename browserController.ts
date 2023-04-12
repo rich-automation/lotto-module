@@ -4,24 +4,25 @@ import puppeteer from "puppeteer";
 interface BrowserControllerInterface {
   getBrowser: () => Promise<Browser>;
   getNewPage: () => Promise<Page>;
+  getFocusedPage: () => Promise<Page>;
   setViewPortSize: (
-    page: Page,
-    size: { width: number; height: number }
+    size: { width: number; height: number },
+    tabIndex?: number
   ) => Promise<void>;
-  navigateWithUrl: (page: Page, url: string) => Promise<HTTPResponse>;
+  navigateWithUrl: (url: string, tabIndex?: number) => Promise<HTTPResponse>;
   fillInput: (
-    page: Page,
     selector: string,
-    value: string | number
+    value: string | number,
+    tabIndex?: number
   ) => Promise<void>;
-  clickForm: (page: Page, selector: string) => Promise<void>;
+  clickForm: (selector: string, tabIndex?: number) => Promise<void>;
   onShowDialog: (
-    page: Page,
-    callback: (dialog: Dialog) => void
+    callback: (dialog: Dialog) => void,
+    tabIndex?: number
   ) => Promise<void>;
-  waitForTime: (page: Page, time: number) => Promise<void>;
-  waitForNavigation: (page: Page) => Promise<HTTPResponse>;
-  cleanPages: (browser: Browser, remainingTabIndex: number[]) => Promise<void>;
+  waitForTime: (time: number, tabIndex?: number) => Promise<void>;
+  waitForNavigation: (tabIndex?: number) => Promise<HTTPResponse>;
+  cleanPages: (remainingTabIndex: number[]) => Promise<void>;
 }
 
 export class BrowserController implements BrowserControllerInterface {
@@ -38,41 +39,66 @@ export class BrowserController implements BrowserControllerInterface {
     this.browser = browser;
     return browser;
   }
+
   async getNewPage() {
     const browser = await this.getBrowser();
-    this.browser = browser;
     return await browser.newPage();
   }
 
-  async setViewPortSize(page: Page, size: { width: number; height: number }) {
+  async getFocusedPage(tabIndex?: number): Promise<Page> {
+    const browser = await this.getBrowser();
+    const pages = await browser.pages();
+
+    // return pages.find(async (page) => page === (await browser.target().page()));
+    const index =
+      tabIndex && tabIndex >= 0 && tabIndex <= pages.length - 1
+        ? tabIndex
+        : pages.length - 1;
+    return pages[index];
+  }
+
+  async setViewPortSize(
+    size: { width: number; height: number },
+    tabIndex?: number
+  ) {
+    const page = await this.getFocusedPage(tabIndex);
     return await page.setViewport(size);
   }
 
-  async navigateWithUrl(page: Page, url: string) {
+  async navigateWithUrl(url: string, tabIndex?: number) {
+    const page = await this.getFocusedPage(tabIndex);
     return await page.goto(url);
   }
 
-  async fillInput(page: Page, selector: string, value: string | number) {
+  async fillInput(selector: string, value: string | number, tabIndex?: number) {
+    const page = await this.getFocusedPage(tabIndex);
     return await page.type(selector, value.toString());
   }
 
-  async clickForm(page: Page, selector: string) {
+  async clickForm(selector: string, tabIndex?: number) {
+    const page = await this.getFocusedPage(tabIndex);
     return await page.click(selector);
   }
 
-  async onShowDialog(page: Page, callback: (dialog: Dialog) => void) {
+  async onShowDialog(callback: (dialog: Dialog) => void, tabIndex?: number) {
+    const page = await this.getFocusedPage(tabIndex);
     page.on("dialog", callback);
   }
 
-  async waitForTime(page: Page, time: number) {
+  async waitForTime(time: number, tabIndex?: number) {
+    const page = await this.getFocusedPage(tabIndex);
     return await page.waitForTimeout(time);
   }
 
-  async waitForNavigation(page: Page) {
+  async waitForNavigation(tabIndex?: number) {
+    const page = await this.getFocusedPage(tabIndex);
     return await page.waitForNavigation({ waitUntil: "load" });
   }
-  async cleanPages(browser: Browser, remainingTabIndex: number[]) {
+  async cleanPages(remainingTabIndex: number[]) {
+    const browser = await this.getBrowser();
+
     const pages = await browser.pages();
+
     pages.map((item, index) => {
       if (!remainingTabIndex.includes(index)) {
         item.close();
