@@ -1,0 +1,17 @@
+{
+    "ts-node": {
+        "compilerOptions": {
+          "module": "commonjs"
+        }
+      },
+    "compilerOptions": {
+    	"target": "es6",
+        "module": "esnext",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "moduleResolution": "node",
+        "outDir": "./build"
+    },
+}
