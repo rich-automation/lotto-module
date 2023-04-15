@@ -6,6 +6,7 @@
   },
   "compilerOptions": {
     "target": "es6",
+    "lib": ["esnext"],
     "module": "esnext",
     "outDir": "./lib",
     "moduleResolution": "node",
