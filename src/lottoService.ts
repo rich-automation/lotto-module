@@ -14,22 +14,21 @@ export class LottoService implements LottoServiceInterface {
   });
 
   async signIn(id: string, password: string): Promise<void> {
+    // 페이지 이동
     const page = await this.browserController.focus(0);
     await page.goto(URLS.LOGIN);
 
+    // 로그인
     const unsubscribe = page.on('dialog', dialog => {
       if (dialog.message() === '아이디 또는 비밀번호를 잘못 입력하셨습니다') {
         console.error('아이디 또는 비밀번호를 잘못 입력하셨습니다');
         this.browserController.close();
       }
-
       unsubscribe();
     });
-
     await page.fill(SELECTORS.ID_INPUT, id);
     await page.fill(SELECTORS.PWD_INPUT, password);
     await page.click(SELECTORS.LOGIN_BUTTON);
-
     await page.wait('navigation');
 
     // 팝업 제거용
