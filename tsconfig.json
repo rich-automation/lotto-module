@@ -14,7 +14,7 @@
     "esModuleInterop": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "importsNotUsedAsValues": "error",
+    "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
@@ -26,5 +26,7 @@
     "noUnusedParameters": true,
     "resolveJsonModule": true,
     "isolatedModules": true
-  }
+  },
+  "include": ["src"],
+  "exclude": ["lib", "node_modules", "**/__tests__/**"]
 }

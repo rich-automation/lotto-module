@@ -1,6 +1,22 @@
 {
+  "name": "@rich-automation/lotto",
+  "version": "0.0.1",
+  "description": "Lotto module",
+  "contributors": [
+    {
+      "name": "bang9",
+      "url": "https://github.com/bang9"
+    },
+    {
+      "name": "DongGukMon",
+      "url": "https://github.com/DongGukMon"
+    }
+  ],
+  "type": "module",
+  "main": "lib/app.js",
+  "types": "lib/app.d.ts",
   "scripts": {
-    "build": "tsc --build",
+    "build": "rm -rf lib && tsc --build",
     "start": "npx ts-node src/app.ts",
     "fix": "yarn fix:eslint && yarn fix:prettier",
     "fix:eslint": "eslint --fix src --ext js,jsx,ts,tsx ",

@@ -1,6 +1,6 @@
 import type { Dialog } from 'puppeteer';
 import { BrowserController } from './browserController';
-import { SELECTORS } from '../constants/selectors';
+import { SELECTORS } from './constants/selectors';
 
 interface LottoServiceInterface {
   signIn(id: string, password: string): void;
