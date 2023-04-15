@@ -33,7 +33,7 @@ export class PuppeteerPage implements BrowserPageInterface {
     return p.promise;
   }
 
-  on(event: BrowserPageEvents, callback: (...args: any[]) => void) {
+  on(event: BrowserPageEvents, callback: (...args: unknown[]) => void) {
     this.page.on(event, callback);
     return () => this.page.off(event, callback);
   }

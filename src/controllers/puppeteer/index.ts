@@ -45,7 +45,9 @@ export class PuppeteerController implements BrowserControllerInterface {
       return new PuppeteerPage(page);
     } else {
       const isWithinRange = Math.max(0, Math.min(pageIndex, pages.length - 1)) === pageIndex;
-      const page = pages.at(isWithinRange ? pageIndex : -1)!;
+      const page = pages.at(isWithinRange ? pageIndex : -1);
+      if (!page) throw new Error('Page is not found');
+
       return new PuppeteerPage(page);
     }
   }
