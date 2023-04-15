@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { LottoService } from '../app';
+import { LottoService } from '../index';
 dotenv.config();
 
 const sec = (n: number) => 1000 * n;
@@ -16,6 +16,6 @@ describe('run', function () {
       const richAutomation = new LottoService();
       await richAutomation.signIn(LOTTO_ID, LOTTO_PWD);
     },
-    sec(10)
+    sec(30)
   );
 });

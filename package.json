@@ -13,8 +13,8 @@
     }
   ],
   "type": "module",
-  "main": "lib/app.js",
-  "types": "lib/app.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "rm -rf lib && tsc --build",
     "test": "jest --forceExit --detectOpenHandles",

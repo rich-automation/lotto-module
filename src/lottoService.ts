@@ -1,51 +1,42 @@
-import type { Dialog } from 'puppeteer';
-import { BrowserController } from './browserController';
 import { SELECTORS } from './constants/selectors';
-
-interface LottoServiceInterface {
-  signIn(id: string, password: string): void;
-  purchase(count: number): Promise<number[][]>;
-  check(numbers: number[]): Promise<void>;
-}
+import { URLS } from './constants/urls';
+import type { LottoServiceInterface } from './types';
+import { createBrowserController } from './controllers/factory';
 
 export class LottoService implements LottoServiceInterface {
-  BrowserController = new BrowserController({
+  browserController = createBrowserController('puppeteer', {
     headless: false,
-    args: ['--window-size-1920,1080'],
-    slowMo: 30
+    defaultViewport: {
+      width: 1080,
+      height: 1024
+    },
+    args: ['--slowMo=30']
   });
 
   async signIn(id: string, password: string): Promise<void> {
-    await this.BrowserController.setViewPortSize({
-      width: 1080,
-      height: 1024
-    });
+    const page = await this.browserController.focus(0);
+    await page.goto(URLS.LOGIN);
 
-    await Promise.all([
-      this.BrowserController.navigateWithUrl(SELECTORS.LOGIN_URL),
-      this.BrowserController.waitForNavigation()
-    ]);
-
-    await this.BrowserController.fillInput(SELECTORS.ID_INPUT_SELECTOR, id);
-    await this.BrowserController.fillInput(SELECTORS.PWD_INPUT_SELECTOR, password);
-    await this.BrowserController.clickForm(SELECTORS.LOGIN_BUTTON_SELECTOR);
-
-    const browser = await this.BrowserController.getBrowser();
-
-    const onShowDialog = (dialog: Dialog) => {
-      //아이디 또는 비밀번호를 잘못 입력했을 경우 브라우저를 닫고 종료한다.
+    const unsubscribe = page.on('dialog', dialog => {
       if (dialog.message() === '아이디 또는 비밀번호를 잘못 입력하셨습니다') {
         console.error('아이디 또는 비밀번호를 잘못 입력하셨습니다');
-        browser.close();
+        this.browserController.close();
       }
-    };
 
-    await this.BrowserController.onShowDialog(onShowDialog);
+      unsubscribe();
+    });
 
-    await Promise.all([this.BrowserController.waitForNavigation(), this.BrowserController.waitForTime(1000)]);
+    await page.fill(SELECTORS.ID_INPUT, id);
+    await page.fill(SELECTORS.PWD_INPUT, password);
+    await page.click(SELECTORS.LOGIN_BUTTON);
+
+    await page.wait('navigation');
 
     // 팝업 제거용
-    await this.BrowserController.cleanPages([1]);
+    await page.wait(1500);
+    await this.browserController.cleanPages([0]);
+
+    unsubscribe();
   }
 
   async purchase(_count: number): Promise<number[][]> {
