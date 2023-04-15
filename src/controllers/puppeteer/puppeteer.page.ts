@@ -11,11 +11,23 @@ export class PuppeteerPage implements BrowserPageInterface {
   async goto(url: string) {
     await this.page.goto(url, { waitUntil: 'load' });
   }
+
   async fill(selector: string, value: string | number) {
     await this.page.type(selector, value.toString());
   }
+
   async click(selector: string) {
     await this.page.click(selector);
+  }
+
+  async setCookie(stringifiedCookie: string) {
+    const cookies = JSON.parse(stringifiedCookie);
+    await this.page.setCookie(...cookies);
+  }
+
+  async cookie() {
+    const cookies = await this.page.cookies();
+    return JSON.stringify(cookies);
   }
 
   async wait(param: 'navigation' | number) {

@@ -13,7 +13,21 @@ export class LottoService implements LottoServiceInterface {
     args: ['--slowMo=30']
   });
 
-  async signIn(id: string, password: string): Promise<void> {
+  async signInWithCookie(cookie: string) {
+    // 페이지 이동
+    const page = await this.browserController.focus(0);
+
+    await page.setCookie(cookie);
+    await page.goto(URLS.LOGIN);
+
+    // 팝업 제거용
+    await page.wait(1500);
+    await this.browserController.cleanPages([0]);
+
+    return page.cookie();
+  }
+
+  async signIn(id: string, password: string) {
     // 페이지 이동
     const page = await this.browserController.focus(0);
     await page.goto(URLS.LOGIN);
@@ -36,6 +50,8 @@ export class LottoService implements LottoServiceInterface {
     await this.browserController.cleanPages([0]);
 
     unsubscribe();
+
+    return page.cookie();
   }
 
   async purchase(_count: number): Promise<number[][]> {
