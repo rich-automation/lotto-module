@@ -17,7 +17,7 @@
   "types": "lib/app.d.ts",
   "scripts": {
     "build": "rm -rf lib && tsc --build",
-    "test": "jest",
+    "test": "jest --forceExit --detectOpenHandles",
     "fix": "yarn fix:eslint && yarn fix:prettier",
     "fix:eslint": "eslint --fix src --ext js,jsx,ts,tsx ",
     "fix:prettier": "prettier --write \"src/**/*.{ts,tsx,js}\"",
