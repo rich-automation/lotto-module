@@ -1,35 +1,25 @@
-import { Browser, Dialog, HTTPResponse, Page } from "puppeteer";
-import puppeteer from "puppeteer";
+import type { Browser, Dialog, Page } from 'puppeteer';
+import puppeteer from 'puppeteer';
 
 interface BrowserControllerInterface {
   getBrowser: () => Promise<Browser>;
   getNewPage: () => Promise<Page>;
   getFocusedPage: () => Promise<Page>;
-  setViewPortSize: (
-    size: { width: number; height: number },
-    tabIndex?: number
-  ) => Promise<void>;
-  navigateWithUrl: (url: string, tabIndex?: number) => Promise<HTTPResponse>;
-  fillInput: (
-    selector: string,
-    value: string | number,
-    tabIndex?: number
-  ) => Promise<void>;
+  setViewPortSize: (size: { width: number; height: number }, tabIndex?: number) => Promise<void>;
+  navigateWithUrl: (url: string, tabIndex?: number) => Promise<void>;
+  fillInput: (selector: string, value: string | number, tabIndex?: number) => Promise<void>;
   clickForm: (selector: string, tabIndex?: number) => Promise<void>;
-  onShowDialog: (
-    callback: (dialog: Dialog) => void,
-    tabIndex?: number
-  ) => Promise<void>;
+  onShowDialog: (callback: (dialog: Dialog) => void, tabIndex?: number) => Promise<void>;
   waitForTime: (time: number, tabIndex?: number) => Promise<void>;
-  waitForNavigation: (tabIndex?: number) => Promise<HTTPResponse>;
+  waitForNavigation: (tabIndex?: number) => Promise<void>;
   cleanPages: (remainingTabIndex: number[]) => Promise<void>;
 }
 
 export class BrowserController implements BrowserControllerInterface {
   browser?: Browser;
-  config: Record<string, any>;
+  config: Record<string, unknown>;
 
-  constructor(config: Record<string, any>) {
+  constructor(config: Record<string, unknown>) {
     this.browser = undefined;
     this.config = config;
   }
@@ -50,24 +40,18 @@ export class BrowserController implements BrowserControllerInterface {
     const pages = await browser.pages();
 
     // return pages.find(async (page) => page === (await browser.target().page()));
-    const index =
-      tabIndex && tabIndex >= 0 && tabIndex <= pages.length - 1
-        ? tabIndex
-        : pages.length - 1;
-    return pages[index];
+    const index = tabIndex && tabIndex >= 0 && tabIndex <= pages.length - 1 ? tabIndex : pages.length - 1;
+    return pages[index]!;
   }
 
-  async setViewPortSize(
-    size: { width: number; height: number },
-    tabIndex?: number
-  ) {
+  async setViewPortSize(size: { width: number; height: number }, tabIndex?: number) {
     const page = await this.getFocusedPage(tabIndex);
     return await page.setViewport(size);
   }
 
   async navigateWithUrl(url: string, tabIndex?: number) {
     const page = await this.getFocusedPage(tabIndex);
-    return await page.goto(url);
+    await page.goto(url);
   }
 
   async fillInput(selector: string, value: string | number, tabIndex?: number) {
@@ -82,7 +66,7 @@ export class BrowserController implements BrowserControllerInterface {
 
   async onShowDialog(callback: (dialog: Dialog) => void, tabIndex?: number) {
     const page = await this.getFocusedPage(tabIndex);
-    page.on("dialog", callback);
+    page.on('dialog', callback);
   }
 
   async waitForTime(time: number, tabIndex?: number) {
@@ -92,7 +76,7 @@ export class BrowserController implements BrowserControllerInterface {
 
   async waitForNavigation(tabIndex?: number) {
     const page = await this.getFocusedPage(tabIndex);
-    return await page.waitForNavigation({ waitUntil: "load" });
+    await page.waitForNavigation({ waitUntil: 'load' });
   }
   async cleanPages(remainingTabIndex: number[]) {
     const browser = await this.getBrowser();

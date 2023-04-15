@@ -1,0 +1,1 @@
+export { LottoService } from './lottoService';

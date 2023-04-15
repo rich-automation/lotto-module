@@ -1,17 +1,32 @@
 {
-    "ts-node": {
-        "compilerOptions": {
-          "module": "commonjs"
-        }
-      },
+  "ts-node": {
     "compilerOptions": {
-    	"target": "es6",
-        "module": "esnext",
-        "noImplicitAny": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "sourceMap": true,
-        "moduleResolution": "node",
-        "outDir": "./build"
-    },
+      "module": "commonjs"
+    }
+  },
+  "compilerOptions": {
+    "target": "es6",
+    "module": "esnext",
+    "outDir": "./lib",
+    "moduleResolution": "node",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "verbatimModuleSyntax": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "noImplicitOverride": true,
+    "noStrictGenericChecks": false,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
+  "include": ["src"],
+  "exclude": ["lib", "node_modules", "**/__tests__/**"]
 }

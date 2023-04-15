@@ -1,13 +1,99 @@
 {
+  "name": "@rich-automation/lotto",
+  "version": "0.0.1",
+  "description": "Lotto module",
+  "contributors": [
+    {
+      "name": "bang9",
+      "url": "https://github.com/bang9"
+    },
+    {
+      "name": "DongGukMon",
+      "url": "https://github.com/DongGukMon"
+    }
+  ],
+  "type": "module",
+  "main": "lib/app.js",
+  "types": "lib/app.d.ts",
   "scripts": {
-    "build": "tsc --build",
-    "start": "npx ts-node app.ts"
+    "build": "rm -rf lib && tsc --build",
+    "start": "npx ts-node src/app.ts",
+    "fix": "yarn fix:eslint && yarn fix:prettier",
+    "fix:eslint": "eslint --fix src --ext js,jsx,ts,tsx ",
+    "fix:prettier": "prettier --write \"src/**/*.{ts,tsx,js}\"",
+    "lint": "yarn lint:ts && yarn lint:eslint && yarn lint:prettier",
+    "lint:eslint": "eslint src --ext js,jsx,ts,tsx ",
+    "lint:prettier": "prettier --check \"src/**/*.{ts,tsx,js}\""
   },
   "dependencies": {
     "puppeteer": "^19.8.5"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.7",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "eslint-config-prettier"
+    ],
+    "plugins": [
+      "@typescript-eslint",
+      "eslint-plugin-prettier"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module"
+    },
+    "rules": {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_"
+        }
+      ],
+      "prettier/prettier": [
+        "error",
+        {
+          "printWidth": 120,
+          "tabWidth": 2,
+          "useTabs": false,
+          "semi": true,
+          "singleQuote": true,
+          "trailingComma": "none",
+          "bracketSpacing": true,
+          "arrowParens": "avoid",
+          "jsxBracketSameLine": false,
+          "proseWrap": "never"
+        }
+      ]
+    },
+    "ignorePatterns": [
+      "node_modules/",
+      "lib/"
+    ]
+  },
+  "prettier": {
+    "printWidth": 120,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "bracketSpacing": true,
+    "arrowParens": "avoid",
+    "jsxBracketSameLine": false,
+    "proseWrap": "never"
   }
 }
