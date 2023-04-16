@@ -2,6 +2,7 @@ import type { BrowserConfigs, BrowserControllerInterface } from '../../types';
 import puppeteer, { Browser } from 'puppeteer';
 import { deferred } from '../../utils/deferred';
 import { PuppeteerPage } from './puppeteer.page';
+import { CONST } from '../../constants';
 
 export class PuppeteerController implements BrowserControllerInterface {
   configs: BrowserConfigs;
@@ -12,17 +13,16 @@ export class PuppeteerController implements BrowserControllerInterface {
     puppeteer.launch(this.configs).then(browser => (this.browser = browser));
   }
 
-  private async getBrowser() {
+  private getBrowser = async () => {
     const p = deferred<Browser>();
 
     if (this.browser) {
       p.resolve(this.browser);
     } else {
       let retry = 0;
-      const maxRetry = 10;
 
       const interval = setInterval(() => {
-        if (maxRetry < retry) {
+        if (CONST.BROWSER_INIT_RETRY_COUNT < retry) {
           clearInterval(interval);
           p.reject(new Error('Browser is not initialized'));
         } else if (this.browser) {
@@ -30,13 +30,13 @@ export class PuppeteerController implements BrowserControllerInterface {
           p.resolve(this.browser);
         }
         retry++;
-      }, 1000);
+      }, CONST.BROWSER_INIT_RETRY_TIMEOUT);
     }
 
     return p.promise;
-  }
+  };
 
-  async focus(pageIndex = -1) {
+  focus = async (pageIndex = -1) => {
     const browser = await this.getBrowser();
     const pages = await browser.pages();
 
@@ -50,13 +50,13 @@ export class PuppeteerController implements BrowserControllerInterface {
 
       return new PuppeteerPage(page);
     }
-  }
+  };
 
-  async close() {
+  close = async () => {
     return this.browser.close();
-  }
+  };
 
-  async cleanPages(remainingTabIndex: number[]) {
+  cleanPages = async (remainingTabIndex: number[]) => {
     const browser = await this.getBrowser();
     const pages = await browser.pages();
 
@@ -67,5 +67,5 @@ export class PuppeteerController implements BrowserControllerInterface {
     });
 
     await Promise.all(promises);
-  }
+  };
 }

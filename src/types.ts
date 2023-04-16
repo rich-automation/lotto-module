@@ -1,4 +1,6 @@
 export interface LottoServiceInterface {
+  destroy(): Promise<void>;
+
   signIn(id: string, password: string): Promise<string>;
   signInWithCookie(cookie: string): Promise<string>;
   purchase(count: number): Promise<number[][]>;
@@ -22,14 +24,15 @@ export interface BrowserControllerInterface {
 }
 
 export interface BrowserPageInterface {
+  url(): Promise<string>;
   goto(url: string): Promise<void>;
   fill(selector: string, value: string | number): Promise<void>;
   click(selector: string): Promise<void>;
   wait(time: number): Promise<void>;
   wait(type: 'navigation'): Promise<void>;
 
-  setCookies(cookies: StringifiedCookies): Promise<void>;
   getCookies(): Promise<StringifiedCookies>;
+  setCookies(cookies: StringifiedCookies): Promise<void>;
 
   on(event: BrowserPageEvents, callback: (...args: any[]) => void): Unsubscribe;
 }

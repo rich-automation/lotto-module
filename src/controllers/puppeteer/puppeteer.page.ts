@@ -1,11 +1,16 @@
 import type { BrowserPageEvents, BrowserPageInterface, StringifiedCookies } from '../../types';
 import { Page } from 'puppeteer';
 import { deferred } from '../../utils/deferred';
+import { lazyRun } from '../../utils/lazyRun';
 
 export class PuppeteerPage implements BrowserPageInterface {
   page: Page;
   constructor(page: Page) {
     this.page = page;
+  }
+
+  async url() {
+    return this.page.url();
   }
 
   async goto(url: string) {
@@ -20,14 +25,14 @@ export class PuppeteerPage implements BrowserPageInterface {
     await this.page.click(selector);
   }
 
-  async setCookies(cookies: StringifiedCookies) {
-    const cookieParams = JSON.parse(cookies);
-    await this.page.setCookie(...cookieParams);
-  }
-
   async getCookies() {
     const cookies = await this.page.cookies();
     return JSON.stringify(cookies);
+  }
+
+  async setCookies(cookies: StringifiedCookies) {
+    const cookieParams = JSON.parse(cookies);
+    await this.page.setCookie(...cookieParams);
   }
 
   async wait(param: 'navigation' | number) {
@@ -39,7 +44,7 @@ export class PuppeteerPage implements BrowserPageInterface {
     }
 
     if (typeof param === 'number') {
-      setTimeout(() => p.resolve(), param);
+      await lazyRun(async () => p.resolve(), param);
     }
 
     return p.promise;
