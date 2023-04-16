@@ -35,10 +35,15 @@ export class PuppeteerPage implements BrowserPageInterface {
     await this.page.setCookie(...cookieParams);
   }
 
-  async wait(param: 'navigation' | number) {
+  async wait(param: 'idle' | 'load' | number) {
     const p = deferred<void>();
 
-    if (param === 'navigation') {
+    if (param === 'idle') {
+      await this.page.waitForNavigation({ waitUntil: 'networkidle0' });
+      p.resolve();
+    }
+
+    if (param === 'load') {
       await this.page.waitForNavigation({ waitUntil: 'load' });
       p.resolve();
     }

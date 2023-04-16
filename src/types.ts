@@ -1,3 +1,5 @@
+import type { LogLevel } from './logger';
+
 export interface LottoServiceInterface {
   destroy(): Promise<void>;
 
@@ -8,6 +10,7 @@ export interface LottoServiceInterface {
 }
 
 export interface BrowserConfigs {
+  logLevel?: LogLevel;
   headless?: boolean;
   defaultViewport?: {
     width: number;
@@ -30,7 +33,8 @@ export interface BrowserPageInterface {
   fill(selector: string, value: string | number): Promise<void>;
   click(selector: string): Promise<void>;
   wait(time: number): Promise<void>;
-  wait(type: 'navigation'): Promise<void>;
+  wait(type: 'load'): Promise<void>;
+  wait(type: 'idle'): Promise<void>;
 
   getCookies(): Promise<StringifiedCookies>;
   setCookies(cookies: StringifiedCookies): Promise<void>;
@@ -38,6 +42,6 @@ export interface BrowserPageInterface {
   on(event: BrowserPageEvents, callback: (...args: any[]) => void): Unsubscribe;
 }
 
-export type BrowserPageEvents = 'load' | 'close' | 'dialog';
+export type BrowserPageEvents = 'load' | 'close' | 'dialog' | 'response';
 export type Unsubscribe = () => void;
 export type StringifiedCookies = string;

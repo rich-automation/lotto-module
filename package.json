@@ -16,6 +16,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
+    "start": "ts-node ./example/app",
     "build": "rm -rf lib && tsc --build",
     "test": "jest --forceExit --detectOpenHandles",
     "install:chrome": "node ./node_modules/puppeteer/install.js",
@@ -28,6 +29,7 @@
     "lint:prettier": "prettier --check \"src/**/*.{ts,tsx,js}\""
   },
   "dependencies": {
+    "dayjs": "^1.11.7",
     "puppeteer": "^19.8.5"
   },
   "devDependencies": {

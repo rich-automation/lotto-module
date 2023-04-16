@@ -3,13 +3,16 @@ import puppeteer, { Browser } from 'puppeteer';
 import { deferred } from '../../utils/deferred';
 import { PuppeteerPage } from './puppeteer.page';
 import { CONST } from '../../constants';
+import { type LoggerInterface } from '../../logger';
 
 export class PuppeteerController implements BrowserControllerInterface {
   configs: BrowserConfigs;
+  logger: LoggerInterface;
   browser!: Browser;
 
-  constructor(configs: BrowserConfigs) {
+  constructor(configs: BrowserConfigs, logger: LoggerInterface) {
     this.configs = configs;
+    this.logger = logger;
     puppeteer.launch(this.configs).then(browser => (this.browser = browser));
   }
 
@@ -57,12 +60,12 @@ export class PuppeteerController implements BrowserControllerInterface {
     return browser.close();
   };
 
-  cleanPages = async (remainingTabIndex: number[]) => {
+  cleanPages = async (remainingPageIndex: number[]) => {
     const browser = await this.getBrowser();
     const pages = await browser.pages();
 
     const promises = pages.map(async (page, index) => {
-      if (!remainingTabIndex.includes(index)) {
+      if (!remainingPageIndex.includes(index)) {
         return page.close();
       }
     });

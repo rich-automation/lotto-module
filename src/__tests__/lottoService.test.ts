@@ -1,11 +1,14 @@
 import * as dotenv from 'dotenv';
 import { LottoService } from '../index';
 import LottoError from '../lottoError';
+import { LogLevel } from '../logger';
+
 dotenv.config();
 
 const seconds = (n: number) => 1000 * n;
+const configs = { logLevel: LogLevel.DEBUG, headless: true, args: ['--no-sandbox'] };
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
-describe('run', function () {
+describe('lottoService', function () {
   let validCookies;
 
   it('should have env variables', () => {
@@ -17,20 +20,20 @@ describe('run', function () {
   it(
     'should return valid cookies when sign-in with correct id and password',
     async () => {
-      const lottoService = new LottoService({ headless: true });
+      const lottoService = new LottoService(configs);
 
       validCookies = await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
       expect(validCookies).toBeDefined();
 
       await lottoService.destroy();
     },
-    seconds(30)
+    seconds(60)
   );
 
   it(
     'should throw an exception when sign-in with incorrect id and password',
     async () => {
-      const lottoService = new LottoService({ headless: true });
+      const lottoService = new LottoService(configs);
       const incorrectID = Math.random().toString(16).slice(2, 8);
       const incorrectPWD = '123456';
 
@@ -42,13 +45,13 @@ describe('run', function () {
 
       await lottoService.destroy();
     },
-    seconds(30)
+    seconds(60)
   );
 
   it(
     'should return valid cookies when sign in with valid cookie',
     async () => {
-      const lottoService = new LottoService({ headless: true });
+      const lottoService = new LottoService(configs);
 
       const cookies = await lottoService.signInWithCookie(validCookies ?? LOTTO_COOKIE);
       expect(cookies).toBeDefined();
@@ -61,7 +64,7 @@ describe('run', function () {
   it(
     'should throw an exception when sign in with invalid cookie',
     async () => {
-      const lottoService = new LottoService({ headless: true });
+      const lottoService = new LottoService(configs);
       const invalidCookies = '[]';
 
       try {
