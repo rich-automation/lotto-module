@@ -1,3 +1,5 @@
+import { invertObject } from './utils/invertObject';
+
 const BaseErrorCode = {
   NETWORK_ERROR: 100001,
   UNKNOWN_ERROR: 199999
@@ -10,6 +12,8 @@ const LoginErrorCode = {
 } as const;
 
 const ErrorCode = { ...BaseErrorCode, ...LoginErrorCode };
+const ErrorName = invertObject(ErrorCode);
+
 type ErrorCodeNumber = (typeof ErrorCode)[keyof typeof ErrorCode];
 
 const ErrorMessage: Record<ErrorCodeNumber, string> = {
@@ -42,8 +46,8 @@ export default class LottoError extends Error {
 
   public code: number;
   constructor(code: ErrorCodeNumber, message?: string) {
-    super(message ?? ErrorMessage[code]);
-    this.name = 'LottoError';
+    super(ErrorMessage[code] ?? message);
+    this.name = ErrorName[code] ?? 'LottoError';
     this.code = code;
   }
 }
