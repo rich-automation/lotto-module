@@ -1,58 +1,105 @@
-import type { Dialog } from 'puppeteer';
-import { BrowserController } from './browserController';
+import type { BrowserConfigs, BrowserControllerInterface, LottoServiceInterface } from './types';
+import LottoError from './lottoError';
 import { SELECTORS } from './constants/selectors';
-
-interface LottoServiceInterface {
-  signIn(id: string, password: string): void;
-  purchase(count: number): Promise<number[][]>;
-  check(numbers: number[]): Promise<void>;
-}
+import { createBrowserController } from './controllers/factory';
+import { URLS } from './constants/urls';
+import { deferred } from './utils/deferred';
+import { CONST } from './constants';
+import { lazyRun } from './utils/lazyRun';
+import Logger, { type LoggerInterface } from './logger';
 
 export class LottoService implements LottoServiceInterface {
-  BrowserController = new BrowserController({
-    headless: false,
-    args: ['--window-size-1920,1080'],
-    slowMo: 30
-  });
+  browserController: BrowserControllerInterface;
+  logger: LoggerInterface;
+  constructor(configs?: BrowserConfigs) {
+    this.logger = new Logger(configs?.logLevel, '[LottoService]');
+    this.browserController = createBrowserController(
+      'puppeteer',
+      {
+        headless: false,
+        defaultViewport: { width: 1080, height: 1024 },
+        ...configs
+      },
+      this.logger
+    );
+  }
 
-  async signIn(id: string, password: string): Promise<void> {
-    await this.BrowserController.setViewPortSize({
-      width: 1080,
-      height: 1024
-    });
+  destroy = async () => {
+    return lazyRun(this.browserController.close, CONST.BROWSER_DESTROY_SAFE_TIMEOUT);
+  };
 
-    await Promise.all([
-      this.BrowserController.navigateWithUrl(SELECTORS.LOGIN_URL),
-      this.BrowserController.waitForNavigation()
-    ]);
-
-    await this.BrowserController.fillInput(SELECTORS.ID_INPUT_SELECTOR, id);
-    await this.BrowserController.fillInput(SELECTORS.PWD_INPUT_SELECTOR, password);
-    await this.BrowserController.clickForm(SELECTORS.LOGIN_BUTTON_SELECTOR);
-
-    const browser = await this.BrowserController.getBrowser();
-
-    const onShowDialog = (dialog: Dialog) => {
-      //아이디 또는 비밀번호를 잘못 입력했을 경우 브라우저를 닫고 종료한다.
-      if (dialog.message() === '아이디 또는 비밀번호를 잘못 입력하셨습니다') {
-        console.error('아이디 또는 비밀번호를 잘못 입력하셨습니다');
-        browser.close();
-      }
-    };
-
-    await this.BrowserController.onShowDialog(onShowDialog);
-
-    await Promise.all([this.BrowserController.waitForNavigation(), this.BrowserController.waitForTime(1000)]);
+  signInWithCookie = async (cookies: string) => {
+    // 쿠키 설정 & 페이지 이동
+    const page = await this.browserController.focus(0);
+    this.logger.debug('[signInWithCookie]', 'setCookies');
+    await page.setCookies(cookies);
+    this.logger.debug('[signInWithCookie]', 'goto', 'login page');
+    await page.goto(URLS.LOGIN);
+    this.logger.debug('[signInWithCookie]', 'page url', await page.url());
 
     // 팝업 제거용
-    await this.BrowserController.cleanPages([1]);
-  }
+    this.logger.debug('[signInWithCookie]', 'clear popups');
+    await page.wait(CONST.BROWSER_PAGE_POPUP_WAIT);
+    await this.browserController.cleanPages([0]);
 
-  async purchase(_count: number): Promise<number[][]> {
+    // 로그인이 되지 않았으면 에러처리
+    if (URLS.LOGIN === (await page.url())) {
+      this.logger.info('[signInWithCookie]', 'failure');
+      throw LottoError.InvalidCookies();
+    }
+
+    this.logger.info('[signInWithCookie]', 'success');
+    return page.getCookies();
+  };
+
+  signIn = async (id: string, password: string) => {
+    const p = deferred<string>();
+
+    queueMicrotask(async () => {
+      // 페이지 이동
+      const page = await this.browserController.focus(0);
+      this.logger.debug('[signIn]', 'goto', 'login page');
+      await page.goto(URLS.LOGIN);
+      this.logger.debug('[signIn]', 'page url', await page.url());
+
+      const unsubscribe = page.on('response', async response => {
+        const url = response.url();
+
+        if (url.includes(URLS.LOGIN.replace('https://', ''))) {
+          // 로그인 실패
+          this.logger.info('[signIn]', 'fallback to login page', 'failure');
+          unsubscribe();
+
+          p.reject(LottoError.CredentialsIncorrect());
+        } else if (url.includes(URLS.MAIN.replace('https://', ''))) {
+          // 로그인 성공
+          this.logger.info('[signIn]', 'fallback to main page', 'success');
+          unsubscribe();
+
+          this.logger.debug('[signIn]', 'clear popups');
+          await page.wait(CONST.BROWSER_PAGE_POPUP_WAIT);
+          await this.browserController.cleanPages([0]);
+
+          const cookies = await page.getCookies();
+          p.resolve(cookies);
+        }
+      });
+
+      // 로그인 시도
+      this.logger.debug('[signIn]', 'try login');
+      await page.fill(SELECTORS.ID_INPUT, id);
+      await page.fill(SELECTORS.PWD_INPUT, password);
+      await page.click(SELECTORS.LOGIN_BUTTON);
+    });
+
+    return p.promise;
+  };
+
+  purchase = async (_count: number) => {
     return [[1, 2, 3, 4, 5, 6]];
-  }
+  };
 
-  async check(_numbers: number[]): Promise<void> {
+  check = async (_numbers: number[]) => {
     return console.log('');
-  }
+  };
 }

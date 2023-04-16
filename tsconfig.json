@@ -1,7 +1,10 @@
 {
   "ts-node": {
+    "esm": true,
     "compilerOptions": {
-      "module": "commonjs"
+      "target": "es6",
+      "lib": ["esnext"],
+      "module": "esnext"
     }
   },
   "compilerOptions": {

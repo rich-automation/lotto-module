@@ -13,19 +13,23 @@
     }
   ],
   "type": "module",
-  "main": "lib/app.js",
-  "types": "lib/app.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
+    "start": "ts-node ./example/app",
     "build": "rm -rf lib && tsc --build",
     "test": "jest --forceExit --detectOpenHandles",
+    "install:chrome": "node ./node_modules/puppeteer/install.js",
     "fix": "yarn fix:eslint && yarn fix:prettier",
     "fix:eslint": "eslint --fix src --ext js,jsx,ts,tsx ",
     "fix:prettier": "prettier --write \"src/**/*.{ts,tsx,js}\"",
     "lint": "yarn lint:ts && yarn lint:eslint && yarn lint:prettier",
+    "lint:ts": "tsc --noEmit",
     "lint:eslint": "eslint src --ext js,jsx,ts,tsx ",
     "lint:prettier": "prettier --check \"src/**/*.{ts,tsx,js}\""
   },
   "dependencies": {
+    "dayjs": "^1.11.7",
     "puppeteer": "^19.8.5"
   },
   "devDependencies": {
@@ -80,7 +84,7 @@
           "trailingComma": "none",
           "bracketSpacing": true,
           "arrowParens": "avoid",
-          "jsxBracketSameLine": false,
+          "bracketSameLine": false,
           "proseWrap": "never"
         }
       ]
@@ -99,7 +103,7 @@
     "trailingComma": "none",
     "bracketSpacing": true,
     "arrowParens": "avoid",
-    "jsxBracketSameLine": false,
+    "bracketSameLine": false,
     "proseWrap": "never"
   }
 }
