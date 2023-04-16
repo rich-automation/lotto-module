@@ -1,4 +1,4 @@
-type Obj = Record<PropertyKey, PropertyKey>;
+type Obj = Record<string | number, string | number>;
 type Inverted<T extends Obj> = {
   [P in keyof T as T[P]]: P;
 };

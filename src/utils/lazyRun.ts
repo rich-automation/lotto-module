@@ -7,7 +7,7 @@ export function lazyRun<T extends () => Promise<void>>(callback: T, timeout = CO
   setTimeout(() => {
     callback()
       .then(() => p.resolve())
-      .catch(() => p.reject());
+      .catch((e: unknown) => p.reject(e));
   }, timeout);
 
   return p.promise;

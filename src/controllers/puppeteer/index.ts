@@ -53,7 +53,8 @@ export class PuppeteerController implements BrowserControllerInterface {
   };
 
   close = async () => {
-    return this.browser.close();
+    const browser = await this.getBrowser();
+    return browser.close();
   };
 
   cleanPages = async (remainingTabIndex: number[]) => {

@@ -22,6 +22,7 @@
     "fix:eslint": "eslint --fix src --ext js,jsx,ts,tsx ",
     "fix:prettier": "prettier --write \"src/**/*.{ts,tsx,js}\"",
     "lint": "yarn lint:ts && yarn lint:eslint && yarn lint:prettier",
+    "lint:ts": "tsc --noEmit",
     "lint:eslint": "eslint src --ext js,jsx,ts,tsx ",
     "lint:prettier": "prettier --check \"src/**/*.{ts,tsx,js}\""
   },
