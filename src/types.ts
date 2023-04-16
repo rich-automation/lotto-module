@@ -13,6 +13,7 @@ export interface BrowserConfigs {
     width: number;
     height: number;
   };
+  [key: string]: unknown;
   args?: string[];
 }
 export interface BrowserControllerInterface {

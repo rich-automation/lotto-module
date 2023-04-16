@@ -17,7 +17,7 @@ describe('run', function () {
   it(
     'should return valid cookies when sign-in with correct id and password',
     async () => {
-      const lottoService = new LottoService();
+      const lottoService = new LottoService({ headless: true });
 
       validCookies = await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
       expect(validCookies).toBeDefined();
@@ -30,7 +30,7 @@ describe('run', function () {
   it(
     'should throw an exception when sign-in with incorrect id and password',
     async () => {
-      const lottoService = new LottoService();
+      const lottoService = new LottoService({ headless: true });
       const incorrectID = Math.random().toString(16).slice(2, 8);
       const incorrectPWD = '123456';
 
@@ -48,7 +48,7 @@ describe('run', function () {
   it(
     'should return valid cookies when sign in with valid cookie',
     async () => {
-      const lottoService = new LottoService();
+      const lottoService = new LottoService({ headless: true });
 
       const cookies = await lottoService.signInWithCookie(validCookies ?? LOTTO_COOKIE);
       expect(cookies).toBeDefined();
@@ -61,7 +61,7 @@ describe('run', function () {
   it(
     'should throw an exception when sign in with invalid cookie',
     async () => {
-      const lottoService = new LottoService();
+      const lottoService = new LottoService({ headless: true });
       const invalidCookies = '[]';
 
       try {

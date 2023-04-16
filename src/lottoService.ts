@@ -1,4 +1,4 @@
-import type { LottoServiceInterface } from './types';
+import type { BrowserConfigs, BrowserControllerInterface, LottoServiceInterface } from './types';
 import LottoError from './lottoError';
 import { SELECTORS } from './constants/selectors';
 import { createBrowserController } from './controllers/factory';
@@ -9,14 +9,18 @@ import { CONST } from './constants';
 import { lazyRun } from './utils/lazyRun';
 
 export class LottoService implements LottoServiceInterface {
-  browserController = createBrowserController('puppeteer', {
-    headless: false,
-    defaultViewport: {
-      width: 1080,
-      height: 1024
-    },
-    args: ['--slowMo=30']
-  });
+  browserController: BrowserControllerInterface;
+  constructor(configs?: BrowserConfigs) {
+    this.browserController = createBrowserController('puppeteer', {
+      headless: false,
+      defaultViewport: {
+        width: 1080,
+        height: 1024
+      },
+      args: ['--slowMo=30'],
+      ...configs
+    });
+  }
 
   destroy = async () => {
     return lazyRun(this.browserController.close, CONST.BROWSER_DESTROY_SAFE_TIMEOUT);
