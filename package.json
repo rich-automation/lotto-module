@@ -80,7 +80,7 @@
           "trailingComma": "none",
           "bracketSpacing": true,
           "arrowParens": "avoid",
-          "jsxBracketSameLine": false,
+          "bracketSameLine": false,
           "proseWrap": "never"
         }
       ]
@@ -99,7 +99,7 @@
     "trailingComma": "none",
     "bracketSpacing": true,
     "arrowParens": "avoid",
-    "jsxBracketSameLine": false,
+    "bracketSameLine": false,
     "proseWrap": "never"
   }
 }

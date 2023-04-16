@@ -28,11 +28,12 @@ export interface BrowserPageInterface {
   wait(time: number): Promise<void>;
   wait(type: 'navigation'): Promise<void>;
 
-  setCookie(stringifiedCookie: string): Promise<void>;
-  cookie(): Promise<string>;
+  setCookies(cookies: StringifiedCookies): Promise<void>;
+  getCookies(): Promise<StringifiedCookies>;
 
   on(event: BrowserPageEvents, callback: (...args: any[]) => void): Unsubscribe;
 }
 
 export type BrowserPageEvents = 'load' | 'close' | 'dialog';
 export type Unsubscribe = () => void;
+export type StringifiedCookies = string;

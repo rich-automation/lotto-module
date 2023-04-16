@@ -17,14 +17,14 @@ export class LottoService implements LottoServiceInterface {
     // 페이지 이동
     const page = await this.browserController.focus(0);
 
-    await page.setCookie(cookie);
+    await page.setCookies(cookie);
     await page.goto(URLS.LOGIN);
 
     // 팝업 제거용
     await page.wait(1500);
     await this.browserController.cleanPages([0]);
 
-    return page.cookie();
+    return page.getCookies();
   }
 
   async signIn(id: string, password: string) {
@@ -51,7 +51,7 @@ export class LottoService implements LottoServiceInterface {
 
     unsubscribe();
 
-    return page.cookie();
+    return page.getCookies();
   }
 
   async purchase(_count: number): Promise<number[][]> {

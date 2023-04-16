@@ -1,4 +1,4 @@
-import type { BrowserPageEvents, BrowserPageInterface } from '../../types';
+import type { BrowserPageEvents, BrowserPageInterface, StringifiedCookies } from '../../types';
 import { Page } from 'puppeteer';
 import { deferred } from '../../utils/deferred';
 
@@ -20,12 +20,12 @@ export class PuppeteerPage implements BrowserPageInterface {
     await this.page.click(selector);
   }
 
-  async setCookie(stringifiedCookie: string) {
-    const cookies = JSON.parse(stringifiedCookie);
-    await this.page.setCookie(...cookies);
+  async setCookies(cookies: StringifiedCookies) {
+    const cookieParams = JSON.parse(cookies);
+    await this.page.setCookie(...cookieParams);
   }
 
-  async cookie() {
+  async getCookies() {
     const cookies = await this.page.cookies();
     return JSON.stringify(cookies);
   }
