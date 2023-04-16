@@ -9,6 +9,7 @@ on:
 env:
   CACHE_NODE_MODULES_PATH: |
     node_modules
+    ~/.cache/puppeteer/chrome
 
 jobs:
   prepare:
@@ -37,6 +38,9 @@ jobs:
       - name: Install dependencies
         if: steps.check_cache.outputs.cache-hit == ''
         run: yarn install --frozen-lockfile
+
+      - name: Install chromium
+        run: yarn install:chrome
     outputs:
       cache_node_modules_key: ${{ steps.lockfile_hash.outputs.hash }}
 
