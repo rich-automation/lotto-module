@@ -104,6 +104,10 @@ jobs:
           key: ${{ needs.prepare.outputs.cache_node_modules_key }}
 
       - name: Run test
+        env:
+          LOTTO_ID: ${{ secrets.lotto_id }}
+          LOTTO_PWD: ${{ secrets.lotto_pwd }}
+          LOTTO_COOKIE: ${{ secrets.lotto_cookie }}
         run: yarn test --collect-coverage
 
       - name: Upload coverage reports to Codecov
