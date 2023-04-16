@@ -20,39 +20,43 @@ export interface LoggerInterface {
 }
 
 export default class Logger implements LoggerInterface {
-  private logLevel: LogLevel;
-  private prefix: string;
+  private _logLevel: LogLevel;
+  private _prefix: string;
 
   constructor(logLevel: LogLevel = LogLevel.INFO, prefix = '') {
-    this.logLevel = logLevel;
-    this.prefix = prefix;
+    this._logLevel = logLevel;
+    this._prefix = prefix;
   }
 
   public setLogLevel(logLevel: LogLevel): void {
-    this.logLevel = logLevel;
+    this._logLevel = logLevel;
+  }
+
+  public get logLevel(): LogLevel {
+    return this._logLevel;
   }
 
   public error(...args: unknown[]): void {
-    if (this.logLevel >= LogLevel.ERROR) {
-      console.error(printNow(), this.prefix, ...args);
+    if (this._logLevel >= LogLevel.ERROR) {
+      console.error(printNow(), this._prefix, ...args);
     }
   }
 
   public warn(...args: unknown[]): void {
-    if (this.logLevel >= LogLevel.WARN) {
-      console.warn(printNow(), this.prefix, ...args);
+    if (this._logLevel >= LogLevel.WARN) {
+      console.warn(printNow(), this._prefix, ...args);
     }
   }
 
   public info(...args: unknown[]): void {
-    if (this.logLevel >= LogLevel.INFO) {
-      console.info(printNow(), this.prefix, ...args);
+    if (this._logLevel >= LogLevel.INFO) {
+      console.info(printNow(), this._prefix, ...args);
     }
   }
 
   public debug(...args: unknown[]): void {
-    if (this.logLevel >= LogLevel.DEBUG) {
-      console.debug(printNow(), this.prefix, ...args);
+    if (this._logLevel >= LogLevel.DEBUG) {
+      console.debug(printNow(), this._prefix, ...args);
     }
   }
 }

@@ -24,6 +24,14 @@ describe('Logger', () => {
     jest.clearAllMocks();
   });
 
+  describe('setLogLevel', () => {
+    it('should set log level', () => {
+      const logger = new Logger(LogLevel.ERROR);
+      logger.setLogLevel(LogLevel.DEBUG);
+      expect(logger.logLevel).toBe(LogLevel.DEBUG);
+    });
+  });
+
   describe('error', () => {
     it('should log error messages when log level is ERROR or higher', () => {
       const logger1 = new Logger(LogLevel.ERROR);
