@@ -1,4 +1,4 @@
-import type { BrowserConfigs, BrowserControllerInterface, LottoServiceInterface, Unsubscribe } from './types';
+import type { BrowserConfigs, BrowserControllerInterface, LottoServiceInterface } from './types';
 import LottoError from './lottoError';
 import { SELECTORS } from './constants/selectors';
 import { createBrowserController } from './controllers/factory';
@@ -62,37 +62,28 @@ export class LottoService implements LottoServiceInterface {
       await page.goto(URLS.LOGIN);
       this.logger.debug('[signIn]', 'page url', await page.url());
 
-      const unsubscribes: Unsubscribe[] = [];
-      unsubscribes.push(
-        page.on('dialog', async dialog => {
-          this.logger.info('[signIn]', 'dialog', dialog.message());
-          dialog.dismiss();
-        })
-      );
-      unsubscribes.push(
-        page.on('response', async response => {
-          const url = response.url();
+      const unsubscribe = page.on('response', async response => {
+        const url = response.url();
 
-          if (url.includes(URLS.LOGIN.replace('https://', ''))) {
-            // 로그인 실패
-            this.logger.info('[signIn]', 'fallback to login page', 'failure');
-            unsubscribes.forEach(fn => fn());
+        if (url.includes(URLS.LOGIN.replace('https://', ''))) {
+          // 로그인 실패
+          this.logger.info('[signIn]', 'fallback to login page', 'failure');
+          unsubscribe();
 
-            p.reject(LottoError.CredentialsIncorrect());
-          } else if (url.includes(URLS.MAIN.replace('https://', ''))) {
-            // 로그인 성공
-            this.logger.info('[signIn]', 'fallback to main page', 'success');
-            unsubscribes.forEach(fn => fn());
+          p.reject(LottoError.CredentialsIncorrect());
+        } else if (url.includes(URLS.MAIN.replace('https://', ''))) {
+          // 로그인 성공
+          this.logger.info('[signIn]', 'fallback to main page', 'success');
+          unsubscribe();
 
-            this.logger.debug('[signIn]', 'clear popups');
-            await page.wait(CONST.BROWSER_PAGE_POPUP_WAIT);
-            await this.browserController.cleanPages([0]);
+          this.logger.debug('[signIn]', 'clear popups');
+          await page.wait(CONST.BROWSER_PAGE_POPUP_WAIT);
+          await this.browserController.cleanPages([0]);
 
-            const cookies = await page.getCookies();
-            p.resolve(cookies);
-          }
-        })
-      );
+          const cookies = await page.getCookies();
+          p.resolve(cookies);
+        }
+      });
 
       // 로그인 시도
       this.logger.debug('[signIn]', 'try login');
