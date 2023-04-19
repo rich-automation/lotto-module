@@ -13,7 +13,9 @@ const getCurrentVolume = () => {
 const getWinningNumbers = async (volume: number) => {
   const p = deferred<number[]>();
   try {
-    let res = await axios.get<any, any>(`https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${volume}`);
+    const res = await axios.get<any, any>(
+      `https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${volume}`
+    );
     const data = res.data;
     if (data.returnValue == 'success') {
       p.resolve([data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6, data.bnusNo]);
