@@ -22,7 +22,7 @@ describe('lottoService', function () {
     async () => {
       const lottoService = new LottoService(configs);
 
-      validCookies = await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
+      validCookies = await lottoService.signIn(LOTTO_ID ?? '', LOTTO_PWD ?? '');
       expect(validCookies).toBeDefined();
 
       await lottoService.destroy();

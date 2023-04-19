@@ -1,4 +1,4 @@
-import type { BrowserConfigs, BrowserControllerInterface, LottoServiceInterface } from './types';
+import type { BrowserConfigs, BrowserControllerInterface, CheckLottoResult, LottoServiceInterface } from './types';
 import LottoError from './lottoError';
 import { SELECTORS } from './constants/selectors';
 import { createBrowserController } from './controllers/factory';
@@ -7,6 +7,7 @@ import { deferred } from './utils/deferred';
 import { CONST } from './constants';
 import { lazyRun } from './utils/lazyRun';
 import Logger, { type LoggerInterface } from './logger';
+import { checkoLottoService } from './checkLottoService';
 
 export class LottoService implements LottoServiceInterface {
   browserController: BrowserControllerInterface;
@@ -99,7 +100,20 @@ export class LottoService implements LottoServiceInterface {
     return [[1, 2, 3, 4, 5, 6]];
   };
 
-  check = async (_numbers: number[]) => {
-    return console.log('');
+  check = async (numbers: number[], _volume?: number) => {
+    const p = deferred<CheckLottoResult>();
+
+    const isValidNumber = checkoLottoService.validateLottoNumber(numbers);
+    if (!isValidNumber) p.reject(LottoError.InvalidLottoNumber());
+
+    const volume = _volume ?? checkoLottoService.getCurrentVolume();
+
+    const winningNumbers = await checkoLottoService.getWinningNumbers(volume);
+
+    const checkResult = checkoLottoService.checkLottoNumber(numbers, winningNumbers);
+
+    p.resolve(checkResult);
+
+    return p.promise;
   };
 }
