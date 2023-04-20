@@ -4,6 +4,14 @@ import LottoError from '../lottoError';
 import { LogLevel } from '../logger';
 import { seconds } from '../utils/seconds';
 
+declare var process: {
+  env: {
+    LOTTO_ID: string;
+    LOTTO_PWD: string;
+    LOTTO_COOKIE?: string;
+  };
+};
+
 dotenv.config();
 
 const configs = { logLevel: LogLevel.DEBUG, headless: true, args: ['--no-sandbox'] };
@@ -22,7 +30,7 @@ describe('lottoService', function () {
     async () => {
       const lottoService = new LottoService(configs);
 
-      validCookies = await lottoService.signIn(LOTTO_ID ?? '', LOTTO_PWD ?? '');
+      validCookies = await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
       expect(validCookies).toBeDefined();
 
       await lottoService.destroy();

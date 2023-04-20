@@ -1,5 +1,12 @@
 import type { LogLevel } from './logger';
 
+declare var process: {
+  env: {
+    LOTTO_ID: string;
+    LOTTO_PWD: string;
+  };
+};
+
 export interface LottoServiceInterface {
   destroy(): Promise<void>;
 
@@ -45,3 +52,14 @@ export interface BrowserPageInterface {
 export type BrowserPageEvents = 'load' | 'close' | 'dialog' | 'response';
 export type Unsubscribe = () => void;
 export type StringifiedCookies = string;
+
+export type GetWinningNumbersResponseType = {
+  returnValue: 'success' | 'fail';
+  drwtNo1: number;
+  drwtNo2: number;
+  drwtNo3: number;
+  drwtNo4: number;
+  drwtNo5: number;
+  drwtNo6: number;
+  bnusNo: number;
+};

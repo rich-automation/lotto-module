@@ -1,11 +1,12 @@
 import axios from 'axios';
 import LottoError from '../../lottoError';
+import { GetWinningNumbersResponseType } from '../../types';
 import { deferred } from '../../utils/deferred';
 
 export const getWinningNumbers = async (volume: number) => {
   const p = deferred<number[]>();
   try {
-    const res = await axios.get<any, any>(
+    const res = await axios.get<GetWinningNumbersResponseType>(
       `https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${volume}`
     );
     const data = res.data;
