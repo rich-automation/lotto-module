@@ -1,11 +1,5 @@
 import type { LogLevel } from './logger';
 
-declare var process: {
-  env: {
-    LOTTO_ID: string;
-    LOTTO_PWD: string;
-  };
-};
 
 export interface LottoServiceInterface {
   destroy(): Promise<void>;
