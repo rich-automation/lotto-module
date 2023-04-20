@@ -1,6 +1,5 @@
 import type { LogLevel } from './logger';
 
-
 export interface LottoServiceInterface {
   destroy(): Promise<void>;
 

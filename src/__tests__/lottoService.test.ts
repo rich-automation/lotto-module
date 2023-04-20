@@ -4,7 +4,7 @@ import LottoError from '../lottoError';
 import { LogLevel } from '../logger';
 import { seconds } from '../utils/seconds';
 
-declare var process: {
+declare let process: {
   env: {
     LOTTO_ID: string;
     LOTTO_PWD: string;
