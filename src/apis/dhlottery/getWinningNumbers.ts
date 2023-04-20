@@ -1,6 +1,6 @@
 import axios from 'axios';
 import LottoError from '../../lottoError';
-import { GetWinningNumbersResponseType } from '../../types';
+import type { GetWinningNumbersResponseType } from '../../types';
 import { deferred } from '../../utils/deferred';
 
 export const getWinningNumbers = async (volume: number) => {
