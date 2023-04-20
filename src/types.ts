@@ -6,7 +6,7 @@ export interface LottoServiceInterface {
   signIn(id: string, password: string): Promise<string>;
   signInWithCookie(cookie: string): Promise<string>;
   purchase(count: number): Promise<number[][]>;
-  check(numbers: number[], volume?: number): Promise<CheckLottoResult>;
+  check(numbers: number[], volume?: number): Promise<{ rank: number; matchedNumbers: number[] }>;
 }
 
 export interface BrowserConfigs {
@@ -45,14 +45,3 @@ export interface BrowserPageInterface {
 export type BrowserPageEvents = 'load' | 'close' | 'dialog' | 'response';
 export type Unsubscribe = () => void;
 export type StringifiedCookies = string;
-
-//checkLottoService
-
-export type CheckLottoResult = { rank: number; setNumbers: number[] };
-
-export type CheckLottoServiceInterface = {
-  checkLottoNumber: (myNumber: number[], winningNumber: number[]) => Promise<CheckLottoResult>;
-  getCurrentVolume: () => number;
-  getWinningNumbers: (volume: number) => Promise<number[]>;
-  validateLottoNumber: (numbers: number[]) => boolean;
-};

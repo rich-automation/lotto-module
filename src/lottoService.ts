@@ -1,4 +1,4 @@
-import type { BrowserConfigs, BrowserControllerInterface, CheckLottoResult, LottoServiceInterface } from './types';
+import type { BrowserConfigs, BrowserControllerInterface, LottoServiceInterface } from './types';
 import LottoError from './lottoError';
 import { SELECTORS } from './constants/selectors';
 import { createBrowserController } from './controllers/factory';
@@ -7,7 +7,10 @@ import { deferred } from './utils/deferred';
 import { CONST } from './constants';
 import { lazyRun } from './utils/lazyRun';
 import Logger, { type LoggerInterface } from './logger';
-import { checkoLottoService } from './checkLottoService';
+import { getCurrentLottoRound } from './utils/getCurrentLottoRound';
+import { validateLottoNumber } from './utils/validateLottoNumber';
+import { getWinningNumbers } from './apis/dhlottery/getWinningNumbers';
+import { checkWinning } from './utils/checkWinning';
 
 export class LottoService implements LottoServiceInterface {
   browserController: BrowserControllerInterface;
@@ -100,20 +103,12 @@ export class LottoService implements LottoServiceInterface {
     return [[1, 2, 3, 4, 5, 6]];
   };
 
-  check = async (numbers: number[], _volume?: number) => {
-    const p = deferred<CheckLottoResult>();
+  check = async (numbers: number[], round: number = getCurrentLottoRound()) => {
+    const isValidNumber = validateLottoNumber(numbers);
+    if (!isValidNumber) throw LottoError.InvalidLottoNumber();
 
-    const isValidNumber = checkoLottoService.validateLottoNumber(numbers);
-    if (!isValidNumber) p.reject(LottoError.InvalidLottoNumber());
+    const winningNumbers = await getWinningNumbers(round);
 
-    const volume = _volume ?? checkoLottoService.getCurrentVolume();
-
-    const winningNumbers = await checkoLottoService.getWinningNumbers(volume);
-
-    const checkResult = checkoLottoService.checkLottoNumber(numbers, winningNumbers);
-
-    p.resolve(checkResult);
-
-    return p.promise;
+    return checkWinning(numbers, winningNumbers);
   };
 }
