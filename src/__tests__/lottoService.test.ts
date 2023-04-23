@@ -122,7 +122,7 @@ describe('lottoService', function () {
   it(
     'should throw an exception when pass invalid lotto numbers',
     async () => {
-      const lottoService = new LottoService();
+      const lottoService = new LottoService(configs);
 
       try {
         await lottoService.check([1, 2, 3, 4, 5, 60], 1);

@@ -20,7 +20,7 @@ export class LottoService implements LottoServiceInterface {
     this.browserController = createBrowserController(
       'puppeteer',
       {
-        headless: true,
+        headless: false,
         defaultViewport: { width: 1080, height: 1024 },
         ...configs
       },
