@@ -89,7 +89,7 @@ describe('lottoService', function () {
   it(
     'run lotto service check',
     async () => {
-      const lottoService = new LottoService();
+      const lottoService = new LottoService(configs);
 
       const cases = [
         { myNumber: [9, 11, 27, 36, 38, 41], round: 1061, expect: { rank: 0, matchedNumbers: [27] } },
