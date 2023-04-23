@@ -97,7 +97,7 @@ describe('lottoService', function () {
         { myNumber: [9, 14, 24, 25, 33, 34], round: 1059, expect: { rank: 0, matchedNumbers: [25, 34] } },
         {
           myNumber: [3, 6, 22, 23, 24, 38],
-          round: undefined,
+          round: 1063,
           expect: { rank: 1, matchedNumbers: [3, 6, 22, 23, 24, 38] }
         },
         {
