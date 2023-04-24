@@ -46,7 +46,7 @@ export type BrowserPageEvents = 'load' | 'close' | 'dialog' | 'response';
 export type Unsubscribe = () => void;
 export type StringifiedCookies = string;
 
-export type GetWinningNumbersResponseType = {
+export type GetWinningNumbersResponse = {
   returnValue: 'success' | 'fail';
   drwtNo1: number;
   drwtNo2: number;
@@ -56,3 +56,13 @@ export type GetWinningNumbersResponseType = {
   drwtNo6: number;
   bnusNo: number;
 };
+
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      LOTTO_ID: string;
+      LOTTO_PWD: string;
+      LOTTO_COOKIE: string;
+    }
+  }
+}

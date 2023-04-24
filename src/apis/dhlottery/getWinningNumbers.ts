@@ -1,22 +1,21 @@
 import axios from 'axios';
 import LottoError from '../../lottoError';
-import type { GetWinningNumbersResponseType } from '../../types';
-import { deferred } from '../../utils/deferred';
+import type { GetWinningNumbersResponse } from '../../types';
 
 export const getWinningNumbers = async (volume: number) => {
-  const p = deferred<number[]>();
   try {
-    const res = await axios.get<GetWinningNumbersResponseType>(
+    const res = await axios.get<GetWinningNumbersResponse>(
       `https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${volume}`
     );
-    const data = res.data;
-    if (data.returnValue == 'success') {
-      p.resolve([data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6, data.bnusNo]);
+    if (res.data.returnValue == 'success') {
+      return toOrderedWinningNumbers(res.data);
     } else {
-      p.reject(LottoError.InvalidRound());
+      throw LottoError.InvalidRound();
     }
   } catch {
-    p.reject(LottoError.NetworkError());
+    throw LottoError.NetworkError();
   }
-  return p.promise;
 };
+function toOrderedWinningNumbers(data: GetWinningNumbersResponse) {
+  return [data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6, data.bnusNo];
+}

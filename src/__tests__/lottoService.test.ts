@@ -4,14 +4,6 @@ import LottoError from '../lottoError';
 import { LogLevel } from '../logger';
 import { seconds } from '../utils/seconds';
 
-declare let process: {
-  env: {
-    LOTTO_ID: string;
-    LOTTO_PWD: string;
-    LOTTO_COOKIE?: string;
-  };
-};
-
 dotenv.config();
 
 const configs = { logLevel: LogLevel.DEBUG, headless: true, args: ['--no-sandbox'] };

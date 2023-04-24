@@ -104,8 +104,7 @@ export class LottoService implements LottoServiceInterface {
   };
 
   check = async (numbers: number[], round: number = getCurrentLottoRound()) => {
-    const isValidNumber = validateLottoNumber(numbers);
-    if (!isValidNumber) throw LottoError.InvalidLottoNumber();
+    validateLottoNumber(numbers);
 
     const winningNumbers = await getWinningNumbers(round);
 
