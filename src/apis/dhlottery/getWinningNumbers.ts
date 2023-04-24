@@ -3,17 +3,19 @@ import LottoError from '../../lottoError';
 import type { GetWinningNumbersResponse } from '../../types';
 
 export const getWinningNumbers = async (volume: number) => {
+  let res;
   try {
-    const res = await axios.get<GetWinningNumbersResponse>(
+    res = await axios.get<GetWinningNumbersResponse>(
       `https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${volume}`
     );
-    if (res.data.returnValue == 'success') {
-      return toOrderedWinningNumbers(res.data);
-    } else {
-      throw LottoError.InvalidRound();
-    }
   } catch {
     throw LottoError.NetworkError();
+  }
+
+  if (res.data.returnValue == 'success') {
+    return toOrderedWinningNumbers(res.data);
+  } else {
+    throw LottoError.InvalidRound();
   }
 };
 function toOrderedWinningNumbers(data: GetWinningNumbersResponse) {
