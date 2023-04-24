@@ -57,12 +57,14 @@ export type GetWinningNumbersResponse = {
   bnusNo: number;
 };
 
+interface ProcessEnvInterface {
+  LOTTO_ID: string;
+  LOTTO_PWD: string;
+  LOTTO_COOKIE: string;
+}
+
 declare global {
   namespace NodeJS {
-    interface ProcessEnv {
-      LOTTO_ID: string;
-      LOTTO_PWD: string;
-      LOTTO_COOKIE: string;
-    }
+    interface ProcessEnv extends ProcessEnvInterface {}
   }
 }
