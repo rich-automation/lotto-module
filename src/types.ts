@@ -57,15 +57,12 @@ export type GetWinningNumbersResponse = {
   bnusNo: number;
 };
 
-interface ProcessEnvInterface {
-  LOTTO_ID: string;
-  LOTTO_PWD: string;
-  LOTTO_COOKIE: string;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-namespace
 declare global {
   namespace NodeJS {
-    interface ProcessEnv extends ProcessEnvInterface {}
+    interface ProcessEnv {
+      LOTTO_ID: string;
+      LOTTO_PWD: string;
+      LOTTO_COOKIE: string;
+    }
   }
 }
