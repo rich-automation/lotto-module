@@ -63,6 +63,7 @@ interface ProcessEnvInterface {
   LOTTO_COOKIE: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 declare global {
   namespace NodeJS {
     interface ProcessEnv extends ProcessEnvInterface {}
