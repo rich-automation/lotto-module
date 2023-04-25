@@ -7,6 +7,10 @@ import { deferred } from './utils/deferred';
 import { CONST } from './constants';
 import { lazyRun } from './utils/lazyRun';
 import Logger, { type LoggerInterface } from './logger';
+import { getCurrentLottoRound } from './utils/getCurrentLottoRound';
+import { validateLottoNumber } from './utils/validateLottoNumber';
+import { getWinningNumbers } from './apis/dhlottery/getWinningNumbers';
+import { checkWinning } from './utils/checkWinning';
 
 export class LottoService implements LottoServiceInterface {
   browserController: BrowserControllerInterface;
@@ -99,7 +103,11 @@ export class LottoService implements LottoServiceInterface {
     return [[1, 2, 3, 4, 5, 6]];
   };
 
-  check = async (_numbers: number[]) => {
-    return console.log('');
+  check = async (numbers: number[], round: number = getCurrentLottoRound()) => {
+    validateLottoNumber(numbers);
+
+    const winningNumbers = await getWinningNumbers(round);
+
+    return checkWinning(numbers, winningNumbers);
   };
 }

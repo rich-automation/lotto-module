@@ -31,6 +31,22 @@ describe('LottoError', () => {
       expect(error.message).toBe(LottoError.getMessage(LottoError.code.INVALID_COOKIE));
       expect(error.name).toBe(LottoError.getName(LottoError.code.INVALID_COOKIE));
     });
+
+    it('should return LottoError with INVALID_ROUND when InvalidRound is called', () => {
+      const error = LottoError.InvalidRound();
+
+      expect(error.code).toBe(LottoError.code.INVALID_ROUND);
+      expect(error.message).toBe(LottoError.getMessage(LottoError.code.INVALID_ROUND));
+      expect(error.name).toBe(LottoError.getName(LottoError.code.INVALID_ROUND));
+    });
+
+    it('should return LottoError with INVALID_LOTTO_NUMBER when InvalidLottoNumber is called', () => {
+      const error = LottoError.InvalidLottoNumber();
+
+      expect(error.code).toBe(LottoError.code.INVALID_LOTTO_NUMBER);
+      expect(error.message).toBe(LottoError.getMessage(LottoError.code.INVALID_LOTTO_NUMBER));
+      expect(error.name).toBe(LottoError.getName(LottoError.code.INVALID_LOTTO_NUMBER));
+    });
   });
 
   describe('constructor', () => {

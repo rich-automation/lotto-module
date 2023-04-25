@@ -6,7 +6,7 @@ export interface LottoServiceInterface {
   signIn(id: string, password: string): Promise<string>;
   signInWithCookie(cookie: string): Promise<string>;
   purchase(count: number): Promise<number[][]>;
-  check(numbers: number[]): Promise<void>;
+  check(numbers: number[], volume?: number): Promise<{ rank: number; matchedNumbers: number[] }>;
 }
 
 export interface BrowserConfigs {
@@ -45,3 +45,24 @@ export interface BrowserPageInterface {
 export type BrowserPageEvents = 'load' | 'close' | 'dialog' | 'response';
 export type Unsubscribe = () => void;
 export type StringifiedCookies = string;
+
+export type GetWinningNumbersResponse = {
+  returnValue: 'success' | 'fail';
+  drwtNo1: number;
+  drwtNo2: number;
+  drwtNo3: number;
+  drwtNo4: number;
+  drwtNo5: number;
+  drwtNo6: number;
+  bnusNo: number;
+};
+
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      LOTTO_ID: string;
+      LOTTO_PWD: string;
+      LOTTO_COOKIE: string;
+    }
+  }
+}
