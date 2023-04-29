@@ -13,7 +13,8 @@ const LoginErrorCode = {
 const LottoErrorCode = {
   INVALID_ROUND: 300001,
   INVALID_LOTTO_NUMBER: 300002,
-  NOT_AUTHENTICATED: 300003
+  NOT_AUTHENTICATED: 300003,
+  PURCHASE_UNAVAILABLE: 300004
 } as const;
 
 const ErrorCode = { ...BaseErrorCode, ...LoginErrorCode, ...LottoErrorCode };
@@ -28,7 +29,8 @@ const ErrorMessage: Record<ErrorCodeNumber, string> = {
   [ErrorCode.INVALID_COOKIE]: '쿠키가 만료됐거나 유효하지 않습니다.',
   [ErrorCode.INVALID_ROUND]: '로또 회차가 올바르지 않습니다.',
   [ErrorCode.INVALID_LOTTO_NUMBER]: '로또 번호가 올바르지 않습니다.',
-  [ErrorCode.NOT_AUTHENTICATED]: '인증되지 않았습니다.'
+  [ErrorCode.NOT_AUTHENTICATED]: '인증되지 않았습니다.',
+  [ErrorCode.PURCHASE_UNAVAILABLE]: '현재는 로또 구매가 불가능합니다.'
 };
 
 export default class LottoError extends Error {
@@ -52,6 +54,9 @@ export default class LottoError extends Error {
   }
   static NotAuthenticated() {
     return new LottoError(ErrorCode.NOT_AUTHENTICATED);
+  }
+  static PurchaseUnavailable() {
+    return new LottoError(ErrorCode.PURCHASE_UNAVAILABLE);
   }
 
   static get code() {

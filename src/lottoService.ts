@@ -11,6 +11,7 @@ import { getCurrentLottoRound } from './utils/getCurrentLottoRound';
 import { validateLottoNumber } from './utils/validateLottoNumber';
 import { getWinningNumbers } from './apis/dhlottery/getWinningNumbers';
 import { checkWinning } from './utils/checkWinning';
+import { validatePurchaseAvailability } from './utils/validatePurchaseAvailability';
 
 export class LottoService implements LottoServiceInterface {
   context = {
@@ -115,6 +116,8 @@ export class LottoService implements LottoServiceInterface {
     if (!this.context.authenticated) {
       throw LottoError.NotAuthenticated();
     }
+
+    validatePurchaseAvailability();
 
     const page = await this.browserController.focus(0);
     await page.goto(URLS.PURCHASE_LOTTO);
