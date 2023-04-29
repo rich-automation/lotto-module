@@ -15,6 +15,7 @@
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "packageManager": "yarn@1.22.19",
   "scripts": {
     "start": "ts-node ./example/app",
     "build": "rm -rf lib && tsc --build",
