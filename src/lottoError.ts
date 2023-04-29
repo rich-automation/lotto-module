@@ -10,12 +10,13 @@ const LoginErrorCode = {
   INVALID_COOKIE: 200002
 } as const;
 
-const LottoCheckErrorCode = {
+const LottoErrorCode = {
   INVALID_ROUND: 300001,
-  INVALID_LOTTO_NUMBER: 300002
+  INVALID_LOTTO_NUMBER: 300002,
+  NOT_AUTHENTICATED: 300003
 } as const;
 
-const ErrorCode = { ...BaseErrorCode, ...LoginErrorCode, ...LottoCheckErrorCode };
+const ErrorCode = { ...BaseErrorCode, ...LoginErrorCode, ...LottoErrorCode };
 const ErrorName = invertObject(ErrorCode);
 
 type ErrorCodeNumber = (typeof ErrorCode)[keyof typeof ErrorCode];
@@ -26,7 +27,8 @@ const ErrorMessage: Record<ErrorCodeNumber, string> = {
   [ErrorCode.CREDENTIALS_INCORRECT]: '아이디 혹은 비밀번호가 일치하지 않습니다.',
   [ErrorCode.INVALID_COOKIE]: '쿠키가 만료됐거나 유효하지 않습니다.',
   [ErrorCode.INVALID_ROUND]: '로또 회차가 올바르지 않습니다.',
-  [ErrorCode.INVALID_LOTTO_NUMBER]: '로또 번호가 올바르지 않습니다.'
+  [ErrorCode.INVALID_LOTTO_NUMBER]: '로또 번호가 올바르지 않습니다.',
+  [ErrorCode.NOT_AUTHENTICATED]: '인증되지 않았습니다.'
 };
 
 export default class LottoError extends Error {
@@ -47,6 +49,9 @@ export default class LottoError extends Error {
   }
   static InvalidLottoNumber() {
     return new LottoError(ErrorCode.INVALID_LOTTO_NUMBER);
+  }
+  static NotAuthenticated() {
+    return new LottoError(ErrorCode.NOT_AUTHENTICATED);
   }
 
   static get code() {

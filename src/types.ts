@@ -5,8 +5,9 @@ export interface LottoServiceInterface {
 
   signIn(id: string, password: string): Promise<string>;
   signInWithCookie(cookie: string): Promise<string>;
-  purchase(count: number): Promise<number[][]>;
+
   check(numbers: number[], volume?: number): Promise<{ rank: number; matchedNumbers: number[] }>;
+  purchase(): Promise<number[][]>;
 }
 
 export interface BrowserConfigs {

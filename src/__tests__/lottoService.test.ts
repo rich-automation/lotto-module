@@ -154,4 +154,30 @@ describe('lottoService', function () {
       }
     });
   });
+
+  describe('purchase', () => {
+    it(
+      'should purchase lotto game with given count',
+      async () => {
+        const lottoService = new LottoService({
+          headless: false,
+          logLevel: LogLevel.DEBUG,
+          defaultViewport: {
+            width: 1920,
+            height: 1080
+          }
+        });
+
+        await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
+        await lottoService.purchase();
+      },
+      seconds(30)
+    );
+  });
+
+  it('should throw an exception when purchase without authentication', async () => {
+    const lottoService = new LottoService(configs);
+
+    await expect(lottoService.purchase()).rejects.toThrow(LottoError.NotAuthenticated());
+  });
 });

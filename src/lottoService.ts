@@ -13,6 +13,10 @@ import { getWinningNumbers } from './apis/dhlottery/getWinningNumbers';
 import { checkWinning } from './utils/checkWinning';
 
 export class LottoService implements LottoServiceInterface {
+  context = {
+    authenticated: false
+  };
+
   browserController: BrowserControllerInterface;
   logger: LoggerInterface;
   constructor(configs?: BrowserConfigs) {
@@ -53,6 +57,7 @@ export class LottoService implements LottoServiceInterface {
     }
 
     this.logger.info('[signInWithCookie]', 'success');
+    this.context.authenticated = true;
     return page.getCookies();
   };
 
@@ -69,23 +74,30 @@ export class LottoService implements LottoServiceInterface {
       const unsubscribe = page.on('response', async response => {
         const url = response.url();
 
-        if (url.includes(URLS.LOGIN.replace('https://', ''))) {
+        switch (true) {
           // 로그인 실패
-          this.logger.info('[signIn]', 'fallback to login page', 'failure');
-          unsubscribe();
+          case url.includes(URLS.LOGIN.replace('https://', '')): {
+            this.logger.info('[signIn]', 'fallback to login page', 'failure');
+            unsubscribe();
 
-          p.reject(LottoError.CredentialsIncorrect());
-        } else if (url.includes(URLS.MAIN.replace('https://', ''))) {
+            p.reject(LottoError.CredentialsIncorrect());
+            break;
+          }
+
           // 로그인 성공
-          this.logger.info('[signIn]', 'fallback to main page', 'success');
-          unsubscribe();
+          case url.includes(URLS.MAIN.replace('https://', '')): {
+            this.logger.info('[signIn]', 'fallback to main page', 'success');
+            this.context.authenticated = true;
+            unsubscribe();
 
-          this.logger.debug('[signIn]', 'clear popups');
-          await page.wait(CONST.BROWSER_PAGE_POPUP_WAIT);
-          await this.browserController.cleanPages([0]);
+            this.logger.debug('[signIn]', 'clear popups');
+            await page.wait(CONST.BROWSER_PAGE_POPUP_WAIT);
+            await this.browserController.cleanPages([0]);
 
-          const cookies = await page.getCookies();
-          p.resolve(cookies);
+            const cookies = await page.getCookies();
+            p.resolve(cookies);
+            break;
+          }
         }
       });
 
@@ -99,8 +111,20 @@ export class LottoService implements LottoServiceInterface {
     return p.promise;
   };
 
-  purchase = async (_count: number) => {
-    return [[1, 2, 3, 4, 5, 6]];
+  purchase = async () => {
+    if (!this.context.authenticated) {
+      throw LottoError.NotAuthenticated();
+    }
+
+    const page = await this.browserController.focus(0);
+    await page.goto(URLS.PURCHASE_LOTTO);
+    return [
+      [1, 2, 3, 4, 5, 6],
+      [1, 2, 3, 4, 5, 6],
+      [1, 2, 3, 4, 5, 6],
+      [1, 2, 3, 4, 5, 6],
+      [1, 2, 3, 4, 5, 6]
+    ];
   };
 
   check = async (numbers: number[], round: number = getCurrentLottoRound()) => {
