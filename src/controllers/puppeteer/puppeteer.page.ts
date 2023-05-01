@@ -1,4 +1,4 @@
-import type { BrowserPageEvents, BrowserPageInterface, StringifiedCookies } from '../../types';
+import type { BrowserPageEvents, BrowserPageInterface, FakeDOMElement, StringifiedCookies } from '../../types';
 import { Page } from 'puppeteer';
 import { deferred } from '../../utils/deferred';
 import { lazyRun } from '../../utils/lazyRun';
@@ -23,6 +23,14 @@ export class PuppeteerPage implements BrowserPageInterface {
 
   async click(selector: string) {
     await this.page.click(selector);
+  }
+
+  async select(selector: string, value: string) {
+    await this.page.select(selector, value);
+  }
+
+  querySelectorAll<T>(selector: string, callback: (elems: FakeDOMElement[]) => T): Promise<T> {
+    return this.page.$$eval(selector, callback);
   }
 
   async getCookies() {

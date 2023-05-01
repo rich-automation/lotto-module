@@ -112,22 +112,30 @@ export class LottoService implements LottoServiceInterface {
     return p.promise;
   };
 
-  purchase = async () => {
-    if (!this.context.authenticated) {
-      throw LottoError.NotAuthenticated();
-    }
-
+  purchase = async (amount = 5) => {
+    if (!this.context.authenticated) throw LottoError.NotAuthenticated();
     validatePurchaseAvailability();
 
+    // move
     const page = await this.browserController.focus(0);
-    await page.goto(URLS.PURCHASE_LOTTO);
-    return [
-      [1, 2, 3, 4, 5, 6],
-      [1, 2, 3, 4, 5, 6],
-      [1, 2, 3, 4, 5, 6],
-      [1, 2, 3, 4, 5, 6],
-      [1, 2, 3, 4, 5, 6]
-    ];
+    await page.goto(URLS.LOTTO_645);
+
+    // click auto button
+    await page.click(SELECTORS.PURCHASE_TYPE_RANDOM);
+
+    // set and confirm amount
+    const amountString = String(Math.max(1, Math.min(5, amount)));
+    await page.select(SELECTORS.PURCHASE_AMOUNT, amountString);
+    await page.click(SELECTORS.PURCHASE_AMOUNT_CONFIRM);
+
+    // click purchase button
+    await page.click(SELECTORS.PURCHASE);
+    await page.click(SELECTORS.PURCHASE_CONFIRM);
+
+    // game result
+    return page.querySelectorAll(SELECTORS.PURCHASE_RECEIPT, elems => {
+      return elems.map(it => Array.from(it.children).map(child => Number(child.innerHTML)));
+    });
   };
 
   check = async (numbers: number[], round: number = getCurrentLottoRound()) => {

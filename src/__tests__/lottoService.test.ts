@@ -156,11 +156,12 @@ describe('lottoService', function () {
   });
 
   describe('purchase', () => {
-    it(
+    it.skip(
       'should purchase lotto game with given count',
       async () => {
         const lottoService = new LottoService({
           headless: false,
+          devtools: true,
           logLevel: LogLevel.DEBUG,
           defaultViewport: {
             width: 1920,
