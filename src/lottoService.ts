@@ -121,19 +121,19 @@ export class LottoService implements LottoServiceInterface {
     await page.goto(URLS.LOTTO_645);
 
     // click auto button
-    await page.click(SELECTORS.PURCHASE_TYPE_RANDOM);
+    await page.click(SELECTORS.PURCHASE_TYPE_RANDOM_BTN);
 
     // set and confirm amount
     const amountString = String(Math.max(1, Math.min(5, amount)));
-    await page.select(SELECTORS.PURCHASE_AMOUNT, amountString);
-    await page.click(SELECTORS.PURCHASE_AMOUNT_CONFIRM);
+    await page.select(SELECTORS.PURCHASE_AMOUNT_SELECT, amountString);
+    await page.click(SELECTORS.PURCHASE_AMOUNT_CONFIRM_BTN);
 
     // click purchase button
-    await page.click(SELECTORS.PURCHASE);
-    await page.click(SELECTORS.PURCHASE_CONFIRM);
+    await page.click(SELECTORS.PURCHASE_BTN);
+    await page.click(SELECTORS.PURCHASE_CONFIRM_BTN);
 
     // game result
-    return page.querySelectorAll(SELECTORS.PURCHASE_RECEIPT, elems => {
+    return page.querySelectorAll(SELECTORS.PURCHASE_NUMBER_LIST, elems => {
       return elems.map(it => Array.from(it.children).map(child => Number(child.innerHTML)));
     });
   };
