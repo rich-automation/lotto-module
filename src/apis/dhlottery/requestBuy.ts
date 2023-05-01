@@ -1,4 +1,3 @@
-
 // POST
 // https://ol.dhlottery.co.kr/olotto/game/execBuy.do
 // form
@@ -9,4 +8,3 @@
 //   param: [{"genType": "0","arrGameChoiceNum": null, "alpabet": "A"}]
 //   gameCnt:1
 // }
-
