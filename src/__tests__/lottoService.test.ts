@@ -174,11 +174,11 @@ describe('lottoService', function () {
       },
       seconds(30)
     );
-  });
 
-  it('should throw an exception when purchase without authentication', async () => {
-    const lottoService = new LottoService(configs);
+    it('should throw an exception when purchase without authentication', async () => {
+      const lottoService = new LottoService(configs);
 
-    await expect(lottoService.purchase()).rejects.toThrow(LottoError.NotAuthenticated());
+      await expect(lottoService.purchase()).rejects.toThrow(LottoError.NotAuthenticated());
+    });
   });
 });
