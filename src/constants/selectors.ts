@@ -7,6 +7,6 @@ export const SELECTORS = {
   PURCHASE_AMOUNT_SELECT: 'select#amoundApply',
   PURCHASE_AMOUNT_CONFIRM_BTN: '#btnSelectNum',
   PURCHASE_BTN: '#btnBuy',
-  PURCHASE_CONFIRM_BTN: '.noti > .btns > button[value="확인"]',
+  PURCHASE_CONFIRM_BTN: '#popupLayerConfirm .btns > input[value="확인"]',
   PURCHASE_NUMBER_LIST: '#reportRow .nums'
 };

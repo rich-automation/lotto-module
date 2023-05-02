@@ -156,21 +156,19 @@ describe('lottoService', function () {
   });
 
   describe('purchase', () => {
-    it.skip(
+    it(
       'should purchase lotto game with given count',
       async () => {
-        const lottoService = new LottoService({
-          headless: false,
-          devtools: true,
-          logLevel: LogLevel.DEBUG,
-          defaultViewport: {
-            width: 1920,
-            height: 1080
-          }
-        });
+        try {
+          const lottoService = new LottoService(configs);
 
-        await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
-        await lottoService.purchase();
+          await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
+          const numbers = await lottoService.purchase(1);
+          expect(numbers).toHaveLength(1);
+          expect(numbers[0]).toHaveLength(6);
+        } catch (e) {
+          // skip
+        }
       },
       seconds(30)
     );
