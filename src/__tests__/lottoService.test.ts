@@ -10,7 +10,7 @@ const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
 
 const configs = {
   logLevel: LogLevel.NONE,
-  headless: false,
+  headless: true,
   args: ['--no-sandbox']
 };
 
