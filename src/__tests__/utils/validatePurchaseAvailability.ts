@@ -3,7 +3,7 @@ import LottoError from '../../lottoError';
 
 describe('validatePurchaseAvailability', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    jest.restoreAllMocks();
   });
 
   describe('should not throw an error when purchase is available', () => {

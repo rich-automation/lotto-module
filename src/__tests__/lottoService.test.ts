@@ -18,7 +18,8 @@ const configs = {
 describe('lottoService', function () {
   let validCookies;
 
-  afterAll(() => {
+  afterEach(() => {
+    jest.restoreAllMocks();
     jest.clearAllMocks();
   });
 
@@ -183,23 +184,17 @@ describe('lottoService', function () {
       await lottoService.destroy();
     });
 
-    it(
-      'should throw an exception when purchase unavailable',
-      async () => {
-        jest.spyOn(Date, 'now').mockReturnValue(new Date('Sun Apr 30 2023 05:00:00 GMT+0900').getTime());
-        const lottoService = new LottoService(configs);
+    it('should throw an exception when purchase unavailable', async () => {
+      jest.spyOn(Date, 'now').mockReturnValue(new Date('Sun Apr 30 2023 05:00:00 GMT+0900').getTime());
+      const lottoService = new LottoService(configs);
+      lottoService.context.authenticated = true;
 
-        await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
-        await expect(lottoService.purchase()).rejects.toThrowError(LottoError.PurchaseUnavailable());
+      await expect(lottoService.purchase()).rejects.toThrowError(LottoError.PurchaseUnavailable());
 
-        await lottoService.destroy();
-      },
-      seconds(30)
-    );
+      await lottoService.destroy();
+    });
 
     it('should purchase lotto game (mock)', async () => {
-      const lottoService = new LottoService(configs);
-
       const mockPage = {
         goto: jest.fn(),
         click: jest.fn(),
@@ -208,6 +203,7 @@ describe('lottoService', function () {
         querySelectorAll: jest.fn(() => [[1, 2, 3, 4, 5, 6]])
       } as unknown as BrowserPageInterface;
 
+      const lottoService = new LottoService(configs);
       lottoService.context.authenticated = true;
       lottoService.browserController = { ...lottoService.browserController, focus: async () => mockPage };
 
