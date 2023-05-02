@@ -132,6 +132,8 @@ export class LottoService implements LottoServiceInterface {
     await page.click(SELECTORS.PURCHASE_BTN);
     await page.click(SELECTORS.PURCHASE_CONFIRM_BTN);
 
+    await page.wait(1000);
+
     // game result
     return page.querySelectorAll(SELECTORS.PURCHASE_NUMBER_LIST, elems => {
       return elems.map(it => Array.from(it.children).map(child => Number(child.innerHTML)));

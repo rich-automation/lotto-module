@@ -1,13 +1,19 @@
 import * as dotenv from 'dotenv';
 import { LottoService } from '../index';
 import LottoError from '../lottoError';
-import { LogLevel } from '../logger';
 import { seconds } from '../utils/seconds';
+import { LogLevel } from '../logger';
+import { lazyRun } from '../utils/lazyRun';
 
 dotenv.config();
-
-const configs = { logLevel: LogLevel.DEBUG, headless: true, args: ['--no-sandbox'] };
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
+
+const configs = {
+  logLevel: LogLevel.NONE,
+  headless: false,
+  args: ['--no-sandbox']
+};
+
 describe('lottoService', function () {
   let validCookies;
 
@@ -140,35 +146,43 @@ describe('lottoService', function () {
           const result = await lottoService.check(numbers, round);
           expect(result).toEqual(expectedResult);
         }
+
+        await lazyRun(() => lottoService.destroy(), seconds(1));
       },
       seconds(60)
     );
 
-    it('should throw an exception when pass invalid lotto numbers', async () => {
-      const lottoService = new LottoService(configs);
+    it(
+      'should throw an exception when pass invalid lotto numbers',
+      async () => {
+        const lottoService = new LottoService(configs);
 
-      try {
-        await lottoService.check([1, 2, 3, 4, 5, 60], 1);
-      } catch (e) {
-        expect(e).toEqual(LottoError.InvalidLottoNumber());
-      }
-    });
+        try {
+          await lottoService.check([1, 2, 3, 4, 5, 60], 1);
+        } catch (e) {
+          expect(e).toEqual(LottoError.InvalidLottoNumber());
+        }
+
+        await lottoService.destroy();
+      },
+      seconds(10)
+    );
   });
 
   describe('purchase', () => {
-    it(
+    // 일주일 구매갯수 제한으로 인해 테스트 스킵
+    it.skip(
       'should purchase lotto game with given count',
       async () => {
-        try {
-          const lottoService = new LottoService(configs);
+        const lottoService = new LottoService(configs);
 
-          await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
-          const numbers = await lottoService.purchase(1);
-          expect(numbers).toHaveLength(1);
-          expect(numbers[0]).toHaveLength(6);
-        } catch (e) {
-          // skip
-        }
+        await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
+        const numbers = await lottoService.purchase(1);
+
+        expect(numbers).toHaveLength(1);
+        expect(numbers[0]).toHaveLength(6);
+
+        await lazyRun(() => lottoService.destroy(), seconds(1));
       },
       seconds(30)
     );
@@ -177,6 +191,8 @@ describe('lottoService', function () {
       const lottoService = new LottoService(configs);
 
       await expect(lottoService.purchase()).rejects.toThrow(LottoError.NotAuthenticated());
+
+      await lottoService.destroy();
     });
   });
 });
