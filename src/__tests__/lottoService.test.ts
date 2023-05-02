@@ -4,6 +4,7 @@ import LottoError from '../lottoError';
 import { seconds } from '../utils/seconds';
 import { LogLevel } from '../logger';
 import { lazyRun } from '../utils/lazyRun';
+import { BrowserPageInterface } from '../types';
 
 dotenv.config();
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
@@ -16,6 +17,10 @@ const configs = {
 
 describe('lottoService', function () {
   let validCookies;
+
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
 
   it('should have env variables', () => {
     expect(LOTTO_ID).toBeDefined();
@@ -170,6 +175,56 @@ describe('lottoService', function () {
   });
 
   describe('purchase', () => {
+    it('should throw an exception when purchase without authentication', async () => {
+      const lottoService = new LottoService(configs);
+
+      await expect(lottoService.purchase()).rejects.toThrow(LottoError.NotAuthenticated());
+
+      await lottoService.destroy();
+    });
+
+    it(
+      'should throw an exception when purchase unavailable',
+      async () => {
+        jest.spyOn(Date, 'now').mockReturnValue(new Date('Sun Apr 30 2023 05:00:00 GMT+0900').getTime());
+        const lottoService = new LottoService(configs);
+
+        await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
+        await expect(lottoService.purchase()).rejects.toThrowError(LottoError.PurchaseUnavailable());
+
+        await lottoService.destroy();
+      },
+      seconds(30)
+    );
+
+    it('should purchase lotto game (mock)', async () => {
+      const lottoService = new LottoService(configs);
+
+      const mockPage = {
+        goto: jest.fn(),
+        click: jest.fn(),
+        select: jest.fn(),
+        wait: jest.fn(),
+        querySelectorAll: jest.fn(() => [[1, 2, 3, 4, 5, 6]])
+      } as unknown as BrowserPageInterface;
+
+      lottoService.context.authenticated = true;
+      lottoService.browserController = { ...lottoService.browserController, focus: async () => mockPage };
+
+      const numbers = await lottoService.purchase(1);
+
+      expect(mockPage.goto).toHaveBeenCalled();
+      expect(mockPage.click).toHaveBeenCalled();
+      expect(mockPage.select).toHaveBeenCalled();
+      expect(mockPage.wait).toHaveBeenCalled();
+      expect(mockPage.querySelectorAll).toHaveBeenCalled();
+
+      expect(numbers).toHaveLength(1);
+      expect(numbers[0]).toHaveLength(6);
+
+      await lottoService.destroy();
+    });
+
     // 일주일 구매갯수 제한으로 인해 테스트 스킵
     it.skip(
       'should purchase lotto game with given count',
@@ -186,13 +241,5 @@ describe('lottoService', function () {
       },
       seconds(30)
     );
-
-    it('should throw an exception when purchase without authentication', async () => {
-      const lottoService = new LottoService(configs);
-
-      await expect(lottoService.purchase()).rejects.toThrow(LottoError.NotAuthenticated());
-
-      await lottoService.destroy();
-    });
   });
 });
