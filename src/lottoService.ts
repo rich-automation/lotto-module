@@ -12,6 +12,7 @@ import { validateLottoNumber } from './utils/validateLottoNumber';
 import { getWinningNumbers } from './apis/dhlottery/getWinningNumbers';
 import { checkWinning } from './utils/checkWinning';
 import { validatePurchaseAvailability } from './utils/validatePurchaseAvailability';
+import { getCheckWinningLink } from './utils/getCheckWinningLink';
 
 export class LottoService implements LottoServiceInterface {
   context = {
@@ -146,5 +147,9 @@ export class LottoService implements LottoServiceInterface {
     const winningNumbers = await getWinningNumbers(round);
 
     return checkWinning(numbers, winningNumbers);
+  };
+
+  getCheckWinningLink = (round: number, numbers: number[][]): string => {
+    return getCheckWinningLink(round, numbers);
   };
 }

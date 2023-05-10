@@ -8,6 +8,8 @@ export interface LottoServiceInterface {
 
   check(numbers: number[], volume?: number): Promise<{ rank: number; matchedNumbers: number[] }>;
   purchase(amount: number): Promise<number[][]>;
+
+  getCheckWinningLink(round: number, numbers: number[][]): string;
 }
 
 export interface BrowserConfigs {

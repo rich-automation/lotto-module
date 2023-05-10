@@ -5,6 +5,11 @@ import { seconds } from '../utils/seconds';
 import { LogLevel } from '../logger';
 import { lazyRun } from '../utils/lazyRun';
 import { BrowserPageInterface } from '../types';
+import { getCheckWinningLink } from '../utils/getCheckWinningLink';
+
+jest.mock('../utils/getCheckWinningLink', () => ({
+  getCheckWinningLink: jest.fn()
+}));
 
 dotenv.config();
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
@@ -228,14 +233,27 @@ describe('lottoService', function () {
         const lottoService = new LottoService(configs);
 
         await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
-        const numbers = await lottoService.purchase(1);
+        const numbers = await lottoService.purchase(5);
 
-        expect(numbers).toHaveLength(1);
+        expect(numbers).toHaveLength(5);
         expect(numbers[0]).toHaveLength(6);
+
+        // const nextRound = getCurrentLottoRound() + 1;
+        // console.log(lottoService.getCheckWinningLink(nextRound, numbers));
 
         await lazyRun(() => lottoService.destroy(), seconds(1));
       },
       seconds(30)
     );
+  });
+
+  describe('getCheckWinningLink', () => {
+    it('should call utils/getCheckWinningLink', async () => {
+      const lottoService = new LottoService(configs);
+      const numbers = [[1, 2, 3, 4, 5, 6]];
+      const round = 1;
+      lottoService.getCheckWinningLink(round, numbers);
+      expect(getCheckWinningLink).toHaveBeenCalledWith(round, numbers);
+    });
   });
 });
