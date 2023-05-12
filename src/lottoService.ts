@@ -11,8 +11,14 @@ import { getCurrentLottoRound } from './utils/getCurrentLottoRound';
 import { validateLottoNumber } from './utils/validateLottoNumber';
 import { getWinningNumbers } from './apis/dhlottery/getWinningNumbers';
 import { checkWinning } from './utils/checkWinning';
+import { validatePurchaseAvailability } from './utils/validatePurchaseAvailability';
+import { getCheckWinningLink } from './utils/getCheckWinningLink';
 
 export class LottoService implements LottoServiceInterface {
+  context = {
+    authenticated: false
+  };
+
   browserController: BrowserControllerInterface;
   logger: LoggerInterface;
   constructor(configs?: BrowserConfigs) {
@@ -53,6 +59,7 @@ export class LottoService implements LottoServiceInterface {
     }
 
     this.logger.info('[signInWithCookie]', 'success');
+    this.context.authenticated = true;
     return page.getCookies();
   };
 
@@ -69,23 +76,30 @@ export class LottoService implements LottoServiceInterface {
       const unsubscribe = page.on('response', async response => {
         const url = response.url();
 
-        if (url.includes(URLS.LOGIN.replace('https://', ''))) {
+        switch (true) {
           // 로그인 실패
-          this.logger.info('[signIn]', 'fallback to login page', 'failure');
-          unsubscribe();
+          case url.includes(URLS.LOGIN.replace('https://', '')): {
+            this.logger.info('[signIn]', 'fallback to login page', 'failure');
+            unsubscribe();
 
-          p.reject(LottoError.CredentialsIncorrect());
-        } else if (url.includes(URLS.MAIN.replace('https://', ''))) {
+            p.reject(LottoError.CredentialsIncorrect());
+            break;
+          }
+
           // 로그인 성공
-          this.logger.info('[signIn]', 'fallback to main page', 'success');
-          unsubscribe();
+          case url.includes(URLS.MAIN.replace('https://', '')): {
+            this.logger.info('[signIn]', 'fallback to main page', 'success');
+            this.context.authenticated = true;
+            unsubscribe();
 
-          this.logger.debug('[signIn]', 'clear popups');
-          await page.wait(CONST.BROWSER_PAGE_POPUP_WAIT);
-          await this.browserController.cleanPages([0]);
+            this.logger.debug('[signIn]', 'clear popups');
+            await page.wait(CONST.BROWSER_PAGE_POPUP_WAIT);
+            await this.browserController.cleanPages([0]);
 
-          const cookies = await page.getCookies();
-          p.resolve(cookies);
+            const cookies = await page.getCookies();
+            p.resolve(cookies);
+            break;
+          }
         }
       });
 
@@ -99,8 +113,32 @@ export class LottoService implements LottoServiceInterface {
     return p.promise;
   };
 
-  purchase = async (_count: number) => {
-    return [[1, 2, 3, 4, 5, 6]];
+  purchase = async (amount = 5) => {
+    if (!this.context.authenticated) throw LottoError.NotAuthenticated();
+    validatePurchaseAvailability();
+
+    // move
+    const page = await this.browserController.focus(0);
+    await page.goto(URLS.LOTTO_645);
+
+    // click auto button
+    await page.click(SELECTORS.PURCHASE_TYPE_RANDOM_BTN);
+
+    // set and confirm amount
+    const amountString = String(Math.max(1, Math.min(5, amount)));
+    await page.select(SELECTORS.PURCHASE_AMOUNT_SELECT, amountString);
+    await page.click(SELECTORS.PURCHASE_AMOUNT_CONFIRM_BTN);
+
+    // click purchase button
+    await page.click(SELECTORS.PURCHASE_BTN);
+    await page.click(SELECTORS.PURCHASE_CONFIRM_BTN);
+
+    await page.wait(1000);
+
+    // game result
+    return page.querySelectorAll(SELECTORS.PURCHASE_NUMBER_LIST, elems => {
+      return elems.map(it => Array.from(it.children).map(child => Number(child.innerHTML)));
+    });
   };
 
   check = async (numbers: number[], round: number = getCurrentLottoRound()) => {
@@ -109,5 +147,9 @@ export class LottoService implements LottoServiceInterface {
     const winningNumbers = await getWinningNumbers(round);
 
     return checkWinning(numbers, winningNumbers);
+  };
+
+  getCheckWinningLink = (round: number, numbers: number[][]): string => {
+    return getCheckWinningLink(round, numbers);
   };
 }

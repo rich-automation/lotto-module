@@ -32,6 +32,20 @@ describe('Logger', () => {
     });
   });
 
+  describe('none', () => {
+    it('should not log messages when log level is NONE', () => {
+      const logger = new Logger(LogLevel.NONE);
+      logger.error('test message');
+      logger.warn('test message');
+      logger.info('test message');
+      logger.debug('test message');
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
+      expect(consoleWarnSpy).not.toHaveBeenCalled();
+      expect(consoleInfoSpy).not.toHaveBeenCalled();
+      expect(consoleDebugSpy).not.toHaveBeenCalled();
+    });
+  });
+
   describe('error', () => {
     it('should log error messages when log level is ERROR or higher', () => {
       const logger1 = new Logger(LogLevel.ERROR);

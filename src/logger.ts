@@ -6,6 +6,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 export enum LogLevel {
+  NONE = -1,
   ERROR = 0,
   WARN = 1,
   INFO = 2,
