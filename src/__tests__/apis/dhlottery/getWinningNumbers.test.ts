@@ -7,6 +7,7 @@ type AxiosMock = jest.MockedFunction<typeof axios.get>;
 
 describe('getWinningNumbers', () => {
   afterAll(() => {
+    jest.resetModules();
     jest.clearAllMocks();
   });
 

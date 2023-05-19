@@ -7,10 +7,6 @@ import { lazyRun } from '../utils/lazyRun';
 import { BrowserPageInterface } from '../types';
 import { getCheckWinningLink } from '../utils/getCheckWinningLink';
 
-jest.mock('../utils/getCheckWinningLink', () => ({
-  getCheckWinningLink: jest.fn()
-}));
-
 dotenv.config();
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
 
@@ -250,10 +246,13 @@ describe('lottoService', function () {
   describe('getCheckWinningLink', () => {
     it('should call utils/getCheckWinningLink', async () => {
       const lottoService = new LottoService(configs);
-      const numbers = [[1, 2, 3, 4, 5, 6]];
       const round = 1;
-      lottoService.getCheckWinningLink(round, numbers);
-      expect(getCheckWinningLink).toHaveBeenCalledWith(round, numbers);
+      const numbers = [[1, 2, 3, 4, 5, 6]];
+
+      const result = lottoService.getCheckWinningLink(round, numbers);
+      const expected = getCheckWinningLink(round, numbers);
+
+      expect(result).toStrictEqual(expected);
     });
   });
 });
