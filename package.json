@@ -1,7 +1,10 @@
 {
   "name": "@rich-automation/lotto",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Lotto module",
+  "publishConfig": {
+    "access": "public"
+  },
   "contributors": [
     {
       "name": "bang9",
@@ -12,13 +15,22 @@
       "url": "https://github.com/DongGukMon"
     }
   ],
-  "type": "module",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/cjs/index",
+  "module": "lib/esm/index",
+  "types": "lib/typescript/index.d.ts",
+  "files": [
+    "lib",
+    "package.json",
+    "README.md"
+  ],
   "packageManager": "yarn@1.22.19",
   "scripts": {
+    "prepack": "yarn build",
     "start": "ts-node ./example/app",
-    "build": "rm -rf lib && tsc --build",
+    "build": "rm -rf lib && yarn build:cjs && yarn build:esm && yarn build:dts",
+    "build:cjs": "tsc --project tsconfig.cjs.json --verbatimModuleSyntax false",
+    "build:esm": "tsc --project tsconfig.esm.json",
+    "build:dts": "tsc --project tsconfig.json --emitDeclarationOnly --declaration --declarationDir lib/typescript",
     "test": "jest --forceExit --detectOpenHandles",
     "install:chrome": "node ./node_modules/puppeteer/install.js",
     "fix": "yarn fix:eslint && yarn fix:prettier",
