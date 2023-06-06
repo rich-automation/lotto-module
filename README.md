@@ -5,6 +5,8 @@
 
 rich automation은 headless browser를 이용해 js환경에서 자동으로 로또를 구매할 수 있는 인터페이스를 제공합니다.
 
+
+
 ## Installation
 ```shell
 # npm
@@ -66,6 +68,10 @@ import {getCurrentLottoRound,LottoService} from "@rich-automation/lotto";
 
 const numbers = "<YOUR_NUMBERS>";
 
+const lottoService = new LottoService({
+    headless:true
+});
+
 const thisRound = getCurrentLottoRound();
 numbers.map((singleGameNumbers)=>{
     const result = lottoService.check(singleGameNumbers,thisRound)
@@ -78,6 +84,10 @@ import {getCurrentLottoRound,LottoService} from "@rich-automation/lotto";
 
 const numbers = "<YOUR_NUMBERS>";
 
+const lottoService = new LottoService({
+    headless:true
+});
+
 const nextRound = getCurrentLottoRound()+1;
 const link = lottoService.getCheckWinningLink(nextRound,numbers);
 console.log(link) //"https://dhlottery.co.kr/qr.do?method=winQr&v=1071q011421273044q040527294044q091819243842q040613203839q080910193240";
@@ -86,11 +96,21 @@ console.log(link) //"https://dhlottery.co.kr/qr.do?method=winQr&v=1071q011421273
 
 
 ## Method
-| Method        |        Param        |            Return             | Description                        |
-|:------------|:-------------------:|:-----------------------------:|:-----------------------------------|
-| signIn       | `id:string,pwd:string` | `Promise<string>`                | id와 pwd를 입력받아 로그인 시도, 성공할경우 로그인 쿠키를 반환       |
-| signInWithCookie       | `cookies:string` | `Promise<string>`             | 로그인 쿠키를 입력받아 로그인 시도, 성공할경우 로그인 쿠키를 반환       |
-| purchase     |      `amount:number`       | `Promise<number[][]>`        | 구매할 게임 횟수를 입력받아 구매 결과를 반환. 구매 게임 횟수의 default는 5이며, 1~5사이 입력 가능   |
-| getCheckWinningLink  |     `round:number,numbers:number[][]`   |     `string`   | 로또 구매 회차와 구매한 번호를 입력받아 당첨 확인 url을 반환        |
-| destroy |                     |        `Promise<void>`        | LottoService 인스턴스에서 사용한 브라우저 컨트롤러를 종료        |
-| check |`numbers:number[],round:number`|`Promise<{rank:number,matchedNumbers:number[]}>`.         | 로또번호와 회차를 입력받아 당첨 등수와 맞춘 번호를 반환 |
+### signIn
+- type: (id: string, password: string)=>Promise&lt;string&gt;
+- description: id와 pwd를 입력받아 동행복권에 로그인합니다. 성공할경우 로그인 쿠키를 반환합니다.
+### signInWithCookie
+- type:(cookies: string)=>Promise&lt;string&gt;
+- description: 로그인 쿠키를 입력받아 동행복권에 로그인합니다. 성공할경우 로그인 쿠키를 반환합니다.
+### purchase
+- type:(amount: number = 5):Promise&lt;number[][]&gt;
+- description: 구매할 게임 횟수를 입력받아 로또를 구매하고, 구매한 번호를 이차원 배열 형태로 반환합니다. amount는 1~5사이 값을 가집니다.
+### check
+- type:(numbers: number[], round: number = getCurrentLottoRound()):Promise&lt;{rank:number;matchedNumbers:number[]}&gt;
+- description: 로또번호와 회차를 입력받아 당첨 등수(rank)와 맞춘 번호(matchedNumbers)를 반환합니다. 회차를 지정하지 않으면 최신 회차를 기준으로 확인합니다.
+### getCheckWinningLink
+- type:(round: number, numbers: number[][]): string
+- description: 회차와 구매한 로또 번호를 입력받아 당첨 확인 링크를 생성합니다. 로또 번호는 해당 회차에 구매한 모든 게임을 이차원 배열 형태로 입력받습니다.
+### destroy
+- type:():Promise&lt;void&gt;
+- description: LottoService 인스턴스에서 사용한 브라우저 컨트롤러를 종료합니다.
