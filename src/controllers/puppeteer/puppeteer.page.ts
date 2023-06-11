@@ -5,8 +5,12 @@ import { lazyRun } from '../../utils/lazyRun';
 import type { LoggerInterface } from '../../logger';
 
 export class PuppeteerPage implements BrowserPageInterface {
-  constructor(public page: Page, public logger?: LoggerInterface) {
+  page: Page;
+  logger?: LoggerInterface;
+
+  constructor(page: Page, logger?: LoggerInterface) {
     this.page = page;
+    this.logger = logger;
   }
 
   async url() {
