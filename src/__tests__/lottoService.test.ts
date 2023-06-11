@@ -10,14 +10,13 @@ import { getCheckWinningLink } from '../utils/getCheckWinningLink';
 dotenv.config();
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
 
-const configs: BrowserConfigs = {
-  controller: 'puppeteer',
-  logLevel: LogLevel.NONE,
-  headless: true,
-  args: ['--no-sandbox']
-};
-
-describe('lottoService.puppeteer', function () {
+describe.each(['puppeteer', 'playwright'])('lottoService.%s', (controller: 'playwright' | 'puppeteer') => {
+  const configs: BrowserConfigs = {
+    controller,
+    logLevel: LogLevel.NONE,
+    headless: true,
+    args: ['--no-sandbox']
+  };
   let validCookies;
 
   afterEach(() => {
