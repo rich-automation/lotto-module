@@ -36,7 +36,7 @@
     "build:dts": "tsc --project tsconfig.json --emitDeclarationOnly --declaration --declarationDir lib/typescript",
     "test": "jest --forceExit --detectOpenHandles",
     "install:puppeteer": "node ./node_modules/puppeteer/install.js",
-    "install:playwright": "npx playwright install --with-deps",
+    "install:playwright": "npx playwright install chromium --with-deps",
     "fix": "yarn fix:eslint && yarn fix:prettier",
     "fix:eslint": "eslint --fix src --ext js,jsx,ts,tsx ",
     "fix:prettier": "prettier --write \"src/**/*.{ts,tsx,js}\"",
