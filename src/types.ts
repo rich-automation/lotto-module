@@ -6,10 +6,10 @@ export interface LottoServiceInterface {
   signIn(id: string, password: string): Promise<string>;
   signInWithCookie(cookie: string): Promise<string>;
 
-  check(numbers: number[], volume?: number): Promise<{ rank: number; matchedNumbers: number[] }>;
+  check(numbers: number[][], volume?: number): Promise<{ rank: number; matchedNumbers: number[] }[]>;
   purchase(amount: number): Promise<number[][]>;
 
-  getCheckWinningLink(round: number, numbers: number[][]): string;
+  getCheckWinningLink(numbers: number[][], round: number): string;
 }
 
 export interface BrowserConfigs {

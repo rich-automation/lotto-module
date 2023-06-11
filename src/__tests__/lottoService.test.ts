@@ -103,49 +103,50 @@ describe.each(['puppeteer', 'playwright'])('lottoService.%s', (controller: 'play
 
         const cases = [
           {
-            numbers: [2, 15, 17, 20, 33, 42],
+            numbers: [[2, 15, 17, 20, 33, 42]],
             round: 1047,
-            expectedResult: { rank: 4, matchedNumbers: [2, 20, 33, 42] }
+            expectedResult: [{ rank: 4, matchedNumbers: [2, 20, 33, 42] }]
           },
           {
-            numbers: [5, 17, 26, 19, 33, 41],
+            numbers: [
+              [5, 17, 26, 19, 33, 41],
+              [1, 5, 17, 26, 19, 33]
+            ],
             round: 1052,
-            expectedResult: { rank: 5, matchedNumbers: [5, 17, 26] }
+            expectedResult: [
+              { rank: 5, matchedNumbers: [5, 17, 26] },
+              { rank: 5, matchedNumbers: [5, 17, 26] }
+            ]
           },
           {
-            numbers: [1, 5, 17, 26, 19, 33],
-            round: 1052,
-            expectedResult: { rank: 5, matchedNumbers: [5, 17, 26] }
-          },
-          {
-            numbers: [2, 22, 26, 29, 30, 34],
+            numbers: [[2, 22, 26, 29, 30, 34]],
             round: 1053,
-            expectedResult: { rank: 3, matchedNumbers: [22, 26, 29, 30, 34] }
+            expectedResult: [{ rank: 3, matchedNumbers: [22, 26, 29, 30, 34] }]
           },
           {
-            numbers: [11, 23, 25, 30, 32, 42],
+            numbers: [[11, 23, 25, 30, 32, 42]],
             round: 1058,
-            expectedResult: { rank: 2, matchedNumbers: [11, 23, 25, 30, 32, 42] }
+            expectedResult: [{ rank: 2, matchedNumbers: [11, 23, 25, 30, 32, 42] }]
           },
           {
-            numbers: [9, 14, 24, 25, 33, 34],
+            numbers: [[9, 14, 24, 25, 33, 34]],
             round: 1059,
-            expectedResult: { rank: 0, matchedNumbers: [25, 34] }
+            expectedResult: [{ rank: 0, matchedNumbers: [25, 34] }]
           },
           {
-            numbers: [3, 8, 29, 31, 34, 45],
+            numbers: [[3, 8, 29, 31, 34, 45]],
             round: 1060,
-            expectedResult: { rank: 0, matchedNumbers: [3, 45] }
+            expectedResult: [{ rank: 0, matchedNumbers: [3, 45] }]
           },
           {
-            numbers: [9, 11, 27, 36, 38, 41],
+            numbers: [[9, 11, 27, 36, 38, 41]],
             round: 1061,
-            expectedResult: { rank: 0, matchedNumbers: [27] }
+            expectedResult: [{ rank: 0, matchedNumbers: [27] }]
           },
           {
-            numbers: [3, 6, 22, 23, 24, 38],
+            numbers: [[3, 6, 22, 23, 24, 38]],
             round: 1063,
-            expectedResult: { rank: 1, matchedNumbers: [3, 6, 22, 23, 24, 38] }
+            expectedResult: [{ rank: 1, matchedNumbers: [3, 6, 22, 23, 24, 38] }]
           }
         ];
 
@@ -165,7 +166,7 @@ describe.each(['puppeteer', 'playwright'])('lottoService.%s', (controller: 'play
         const lottoService = new LottoService(configs);
 
         try {
-          await lottoService.check([1, 2, 3, 4, 5, 60], 1);
+          await lottoService.check([[1, 2, 3, 4, 5, 60]], 1);
         } catch (e) {
           expect(e).toEqual(LottoError.InvalidLottoNumber());
         }
@@ -249,8 +250,8 @@ describe.each(['puppeteer', 'playwright'])('lottoService.%s', (controller: 'play
       const round = 1;
       const numbers = [[1, 2, 3, 4, 5, 6]];
 
-      const result = lottoService.getCheckWinningLink(round, numbers);
-      const expected = getCheckWinningLink(round, numbers);
+      const result = lottoService.getCheckWinningLink(numbers, round);
+      const expected = getCheckWinningLink(numbers, round);
 
       expect(result).toStrictEqual(expected);
     });

@@ -13,6 +13,7 @@ import { getWinningNumbers } from './apis/dhlottery/getWinningNumbers';
 import { checkWinning } from './utils/checkWinning';
 import { validatePurchaseAvailability } from './utils/validatePurchaseAvailability';
 import { getCheckWinningLink } from './utils/getCheckWinningLink';
+import { getNextLottoRound } from './utils/getNextLottoRound';
 
 export class LottoService implements LottoServiceInterface {
   context = {
@@ -21,6 +22,7 @@ export class LottoService implements LottoServiceInterface {
 
   browserController: BrowserControllerInterface;
   logger: LoggerInterface;
+
   constructor(configs?: BrowserConfigs) {
     this.logger = new Logger(configs?.logLevel, '[LottoService]');
     this.browserController = createBrowserController(
@@ -154,17 +156,17 @@ export class LottoService implements LottoServiceInterface {
     });
   };
 
-  check = async (numbers: number[], round: number = getCurrentLottoRound()) => {
-    validateLottoNumber(numbers);
+  check = async (numbers: number[][], round: number = getCurrentLottoRound()) => {
+    numbers.forEach(number => validateLottoNumber(number));
 
-    this.logger.debug('[check]', 'getWinningNumbers');
     const winningNumbers = await getWinningNumbers(round);
+    this.logger.debug('[check]', 'getWinningNumbers');
 
-    return checkWinning(numbers, winningNumbers);
+    return numbers.map(game => checkWinning(game, winningNumbers));
   };
 
-  getCheckWinningLink = (round: number, numbers: number[][]): string => {
+  getCheckWinningLink = (numbers: number[][], round = getNextLottoRound()): string => {
     this.logger.debug('[getCheckWinningLink]', 'getCheckWinningLink');
-    return getCheckWinningLink(round, numbers);
+    return getCheckWinningLink(numbers, round);
   };
 }
