@@ -134,10 +134,10 @@ export class LottoService implements LottoServiceInterface {
 
     // click purchase button
     this.logger.debug('[purchase]', 'click purchase button');
-    await page.click(SELECTORS.PURCHASE_BTN, true);
+    await page.click(SELECTORS.PURCHASE_BTN);
 
     this.logger.debug('[purchase]', 'click purchase confirm button');
-    await page.click(SELECTORS.PURCHASE_CONFIRM_BTN, true);
+    await page.click(SELECTORS.PURCHASE_CONFIRM_BTN);
 
     await page.wait(1000);
 

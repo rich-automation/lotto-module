@@ -35,7 +35,7 @@ export class PlaywrightPage implements BrowserPageInterface {
       await this.page.evaluate(s => document.querySelector(s).click(), selector);
       await this.wait(250);
     } else {
-      await this.page.click(selector);
+      await this.page.click(selector, { timeout: 0 });
     }
   }
 

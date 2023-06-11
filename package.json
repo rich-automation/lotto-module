@@ -22,6 +22,7 @@
   "files": [
     "lib",
     "package.json",
+    "playwright.config.ts",
     "README.md"
   ],
   "packageManager": "yarn@1.22.19",
