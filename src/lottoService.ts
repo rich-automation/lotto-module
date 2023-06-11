@@ -129,7 +129,7 @@ export class LottoService implements LottoServiceInterface {
 
     // set and confirm amount
     const amountString = String(Math.max(1, Math.min(5, amount)));
-    this.logger.debug('[purchase]', `select purchase amount${amountString} -> amount confirm`);
+    this.logger.debug('[purchase]', `select purchase amount(${amountString}) -> amount confirm`);
     await page.select(SELECTORS.PURCHASE_AMOUNT_SELECT, amountString);
     await page.click(SELECTORS.PURCHASE_AMOUNT_CONFIRM_BTN);
 

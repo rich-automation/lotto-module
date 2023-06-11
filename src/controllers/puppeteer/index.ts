@@ -45,13 +45,13 @@ export class PuppeteerController implements BrowserControllerInterface {
 
     if (pages.length === 0) {
       const page = await browser.newPage();
-      return new PuppeteerPage(page);
+      return new PuppeteerPage(page, this.logger);
     } else {
       const isWithinRange = Math.max(0, Math.min(pageIndex, pages.length - 1)) === pageIndex;
       const page = pages.at(isWithinRange ? pageIndex : -1);
       if (!page) throw new Error('Page is not found');
 
-      return new PuppeteerPage(page);
+      return new PuppeteerPage(page, this.logger);
     }
   };
 

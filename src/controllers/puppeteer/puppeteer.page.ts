@@ -2,10 +2,10 @@ import type { BrowserPageEvents, BrowserPageInterface, FakeDOMElement, Stringifi
 import { Page } from 'puppeteer';
 import { deferred } from '../../utils/deferred';
 import { lazyRun } from '../../utils/lazyRun';
+import type { LoggerInterface } from '../../logger';
 
 export class PuppeteerPage implements BrowserPageInterface {
-  page: Page;
-  constructor(page: Page) {
+  constructor(public page: Page, public logger?: LoggerInterface) {
     this.page = page;
   }
 
@@ -24,6 +24,7 @@ export class PuppeteerPage implements BrowserPageInterface {
   async click(selector: string, useWaitForSelector = false) {
     if (useWaitForSelector) {
       const handle = await this.page.waitForSelector(selector, { timeout: 15000 });
+      this.logger?.debug('[PuppeteerPage]', '[click]', 'handle', handle);
       handle?.click();
     } else {
       await this.page.click(selector);
