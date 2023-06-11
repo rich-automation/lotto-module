@@ -26,4 +26,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          yarn release:ci ${{ github.event.inputs.version }}
+          yarn release-it ${{ github.event.inputs.version }} --ci --npm.skipChecks
