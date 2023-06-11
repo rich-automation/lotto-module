@@ -10,6 +10,7 @@ env:
   CACHE_NODE_MODULES_PATH: |
     node_modules
     ~/.cache/puppeteer/chrome
+    ~/.cache/ms-playwright
 
 jobs:
   prepare:
@@ -39,9 +40,13 @@ jobs:
         if: steps.check_cache.outputs.cache-hit == ''
         run: yarn install --frozen-lockfile
 
-      - name: Install chromium
+      - name: Install puppeteer
         if: steps.check_cache.outputs.cache-hit == ''
-        run: yarn install:chrome
+        run: yarn install:puppeteer
+
+      - name: Install playwright
+        if: steps.check_cache.outputs.cache-hit == ''
+        run: yarn install:playwright
     outputs:
       cache_node_modules_key: ${{ steps.lockfile_hash.outputs.hash }}
 

@@ -24,11 +24,10 @@ export class LottoService implements LottoServiceInterface {
   constructor(configs?: BrowserConfigs) {
     this.logger = new Logger(configs?.logLevel, '[LottoService]');
     this.browserController = createBrowserController(
-      'puppeteer',
+      configs?.controller ?? 'playwright',
       {
         defaultViewport: { width: 1080, height: 1024 },
-        ...configs,
-        headless: configs?.headless === false ? false : 'new'
+        ...configs
       },
       this.logger
     );

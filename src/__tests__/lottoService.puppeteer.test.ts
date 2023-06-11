@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { getCurrentLottoRound, LottoService } from '../index';
+import { BrowserConfigs, getCurrentLottoRound, LottoService } from '../index';
 import LottoError from '../lottoError';
 import { seconds } from '../utils/seconds';
 import { LogLevel } from '../logger';
@@ -10,13 +10,14 @@ import { getCheckWinningLink } from '../utils/getCheckWinningLink';
 dotenv.config();
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
 
-const configs = {
-  logLevel: LogLevel.DEBUG,
+const configs: BrowserConfigs = {
+  controller: 'puppeteer',
+  logLevel: LogLevel.NONE,
   headless: true,
   args: ['--no-sandbox']
 };
 
-describe('lottoService', function () {
+describe('lottoService.puppeteer', function () {
   let validCookies;
 
   afterEach(() => {
@@ -223,7 +224,7 @@ describe('lottoService', function () {
     });
 
     // 일주일 구매갯수 제한으로 인해 테스트 스킵
-    it(
+    it.skip(
       'should purchase lotto game with given count',
       async () => {
         const lottoService = new LottoService(configs);
