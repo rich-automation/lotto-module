@@ -3,7 +3,8 @@
   "version": "0.0.4",
   "description": "Lotto module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "contributors": [
     {
@@ -26,10 +27,12 @@
   "packageManager": "yarn@1.22.19",
   "scripts": {
     "prepack": "yarn build",
+    "release:ci": "release-it --ci --npm.skipChecks",
+    "release:ci:test": "release-it --ci --npm.skipChecks --dry-run",
     "start": "ts-node ./example/app",
     "build": "rm -rf lib && yarn build:cjs && yarn build:esm && yarn build:dts",
-    "build:cjs": "tsc --project tsconfig.cjs.json --verbatimModuleSyntax false",
-    "build:esm": "tsc --project tsconfig.esm.json",
+    "build:cjs": "tsc --project tsconfig.cjs.json --verbatimModuleSyntax false && echo '{\"type\": \"commonjs\"}' > lib/cjs/package.json",
+    "build:esm": "tsc --project tsconfig.esm.json && echo '{\"type\": \"module\"}' > lib/esm/package.json",
     "build:dts": "tsc --project tsconfig.json --emitDeclarationOnly --declaration --declarationDir lib/typescript",
     "test": "jest --forceExit --detectOpenHandles",
     "install:chrome": "node ./node_modules/puppeteer/install.js",
@@ -44,7 +47,7 @@
   "dependencies": {
     "axios": "^1.3.5",
     "dayjs": "^1.11.7",
-    "puppeteer": "^19.8.5"
+    "puppeteer": "^20.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",

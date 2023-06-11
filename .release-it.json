@@ -1,0 +1,14 @@
+{
+  "git": {
+    "requireBranch": "main"
+  },
+  "hooks": {
+    "after:bump": "npx auto-changelog -p"
+  },
+  "github": {
+    "release": true
+  },
+  "npm": {
+    "publish": true
+  }
+}

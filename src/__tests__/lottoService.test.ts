@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { LottoService } from '../index';
+import { getCurrentLottoRound, LottoService } from '../index';
 import LottoError from '../lottoError';
 import { seconds } from '../utils/seconds';
 import { LogLevel } from '../logger';
@@ -234,8 +234,8 @@ describe('lottoService', function () {
         expect(numbers).toHaveLength(5);
         expect(numbers[0]).toHaveLength(6);
 
-        // const nextRound = getCurrentLottoRound() + 1;
-        // console.log(lottoService.getCheckWinningLink(nextRound, numbers));
+        const nextRound = getCurrentLottoRound() + 1;
+        console.log(lottoService.getCheckWinningLink(nextRound, numbers));
 
         await lazyRun(() => lottoService.destroy(), seconds(1));
       },

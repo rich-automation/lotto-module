@@ -1,0 +1,29 @@
+name: npm publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'version'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+      - run: yarn install --immutable
+      - name: 'set environments'
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" >> .npmrc
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: 'publish to npm'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          yarn release:ci ${{ github.event.inputs.version }}

@@ -14,7 +14,7 @@ export interface LottoServiceInterface {
 
 export interface BrowserConfigs {
   logLevel?: LogLevel;
-  headless?: boolean;
+  headless?: boolean | 'new';
   defaultViewport?: {
     width: number;
     height: number;

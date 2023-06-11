@@ -26,9 +26,9 @@ export class LottoService implements LottoServiceInterface {
     this.browserController = createBrowserController(
       'puppeteer',
       {
-        headless: false,
         defaultViewport: { width: 1080, height: 1024 },
-        ...configs
+        ...configs,
+        headless: configs?.headless === false ? false : 'new'
       },
       this.logger
     );
@@ -115,27 +115,33 @@ export class LottoService implements LottoServiceInterface {
 
   purchase = async (amount = 5) => {
     if (!this.context.authenticated) throw LottoError.NotAuthenticated();
+    this.logger.debug('[purchase]', 'validatePurchaseAvailability');
     validatePurchaseAvailability();
 
     // move
+    this.logger.debug('[purchase]', 'move to lotto game page');
     const page = await this.browserController.focus(0);
     await page.goto(URLS.LOTTO_645);
 
     // click auto button
+    this.logger.debug('[purchase]', 'click purchase type button -> auto');
     await page.click(SELECTORS.PURCHASE_TYPE_RANDOM_BTN);
 
     // set and confirm amount
     const amountString = String(Math.max(1, Math.min(5, amount)));
+    this.logger.debug('[purchase]', `select purchase amount${amountString} -> amount confirm`);
     await page.select(SELECTORS.PURCHASE_AMOUNT_SELECT, amountString);
     await page.click(SELECTORS.PURCHASE_AMOUNT_CONFIRM_BTN);
 
     // click purchase button
+    this.logger.debug('[purchase]', 'click purchase button -> purchase confirm');
     await page.click(SELECTORS.PURCHASE_BTN);
     await page.click(SELECTORS.PURCHASE_CONFIRM_BTN);
 
     await page.wait(1000);
 
     // game result
+    this.logger.debug('[purchase]', 'print result');
     return page.querySelectorAll(SELECTORS.PURCHASE_NUMBER_LIST, elems => {
       return elems.map(it => Array.from(it.children).map(child => Number(child.innerHTML)));
     });
@@ -144,12 +150,14 @@ export class LottoService implements LottoServiceInterface {
   check = async (numbers: number[], round: number = getCurrentLottoRound()) => {
     validateLottoNumber(numbers);
 
+    this.logger.debug('[check]', 'getWinningNumbers');
     const winningNumbers = await getWinningNumbers(round);
 
     return checkWinning(numbers, winningNumbers);
   };
 
   getCheckWinningLink = (round: number, numbers: number[][]): string => {
+    this.logger.debug('[getCheckWinningLink]', 'getCheckWinningLink');
     return getCheckWinningLink(round, numbers);
   };
 }
