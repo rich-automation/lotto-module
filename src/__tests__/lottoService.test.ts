@@ -223,15 +223,15 @@ describe('lottoService', function () {
     });
 
     // 일주일 구매갯수 제한으로 인해 테스트 스킵
-    it.skip(
+    it(
       'should purchase lotto game with given count',
       async () => {
         const lottoService = new LottoService(configs);
 
         await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
-        const numbers = await lottoService.purchase(5);
+        const numbers = await lottoService.purchase(1);
 
-        expect(numbers).toHaveLength(5);
+        expect(numbers).toHaveLength(1);
         expect(numbers[0]).toHaveLength(6);
 
         const nextRound = getCurrentLottoRound() + 1;
