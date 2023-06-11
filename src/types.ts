@@ -34,7 +34,7 @@ export interface BrowserPageInterface {
   url(): Promise<string>;
   goto(url: string): Promise<void>;
   fill(selector: string, value: string | number): Promise<void>;
-  click(selector: string): Promise<void>;
+  click(selector: string, useWaitForSelector?: boolean): Promise<void>;
   select(selector: string, value: string): Promise<void>;
   querySelectorAll<T>(selector: string, callback: (elems: FakeDOMElement[]) => T): Promise<T>;
   wait(time: number): Promise<void>;
