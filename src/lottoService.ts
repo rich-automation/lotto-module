@@ -7,7 +7,7 @@ import { deferred } from './utils/deferred';
 import { CONST } from './constants';
 import { lazyRun } from './utils/lazyRun';
 import Logger, { type LoggerInterface } from './logger';
-import { getCurrentLottoRound } from './utils/getCurrentLottoRound';
+import { getLastLottoRound } from './utils/getLastLottoRound';
 import { validateLottoNumber } from './utils/validateLottoNumber';
 import { getWinningNumbers } from './apis/dhlottery/getWinningNumbers';
 import { checkWinning } from './utils/checkWinning';
@@ -156,11 +156,11 @@ export class LottoService implements LottoServiceInterface {
     });
   };
 
-  check = async (numbers: number[][], round: number = getCurrentLottoRound()) => {
+  check = async (numbers: number[][], round: number = getLastLottoRound()) => {
     numbers.forEach(number => validateLottoNumber(number));
 
-    const winningNumbers = await getWinningNumbers(round);
     this.logger.debug('[check]', 'getWinningNumbers');
+    const winningNumbers = await getWinningNumbers(round);
 
     return numbers.map(game => checkWinning(game, winningNumbers));
   };

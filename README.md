@@ -68,7 +68,7 @@ console.log(numbers); //[[ 1, 14, 21, 27, 30, 44 ],[ 4, 5, 27, 29, 40, 44 ],[ 9,
 ### 당첨 확인
 이번 회차 당첨 확인
 ```js
-import {getCurrentLottoRound,LottoService} from "@rich-automation/lotto";
+import {getLastLottoRound,LottoService} from "@rich-automation/lotto";
 
 const numbers = "[[1,2,3,4,5,6],[5,6,7,8,9,10]";
 
@@ -76,7 +76,7 @@ const lottoService = new LottoService({
     headless:true
 });
 
-const currentRound = getCurrentLottoRound();
+const currentRound = getLastLottoRound();
 
 const result = await lottoService.check(numbers,currentRound)
 console.log(result) //[{rank:1,matchedNumbers:[1,2,3,4,5,6]},{rank:5,matchedNumbers:[5,6]]
@@ -110,7 +110,7 @@ console.log(link) //"https://dhlottery.co.kr/qr.do?method=winQr&v=1071q010203040
 - `(amount: number = 5):Promise&lt;number[][]&gt`
 - description: 구매할 게임 횟수를 입력받아 로또를 구매하고, 구매한 번호를 이차원 배열 형태로 반환합니다. amount는 1~5사이 값을 가집니다.
 ### check
-- `(numbers: number[][], round: number = getCurrentLottoRound()):Promise&lt;{rank:number;matchedNumbers:number[]}[]&gt;`
+- `(numbers: number[][], round: number = getLastLottoRound()):Promise&lt;{rank:number;matchedNumbers:number[]}[]&gt;`
 - description: 회차와 해당 회차에 구매한 로또번호를 입력받아 당첨 등수(rank)와 맞춘 번호(matchedNumbers)목록을 반환합니다. 회차를 지정하지 않으면 최신 회차를 기준으로 확인합니다.
 ### getCheckWinningLink
 - `(numbers: number[][], round: number = getNextLottoRound()): string`

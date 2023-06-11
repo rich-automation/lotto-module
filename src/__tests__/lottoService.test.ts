@@ -1,11 +1,12 @@
 import * as dotenv from 'dotenv';
-import { BrowserConfigs, getCurrentLottoRound, LottoService } from '../index';
 import LottoError from '../lottoError';
 import { seconds } from '../utils/seconds';
 import { LogLevel } from '../logger';
 import { lazyRun } from '../utils/lazyRun';
-import { BrowserPageInterface } from '../types';
+import { BrowserConfigs, BrowserPageInterface } from '../types';
 import { getCheckWinningLink } from '../utils/getCheckWinningLink';
+import { getNextLottoRound } from '../utils/getNextLottoRound';
+import { LottoService } from '../lottoService';
 
 dotenv.config();
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
@@ -235,8 +236,8 @@ describe.each(['puppeteer', 'playwright'])('lottoService.%s', (controller: 'play
         expect(numbers).toHaveLength(1);
         expect(numbers[0]).toHaveLength(6);
 
-        const nextRound = getCurrentLottoRound() + 1;
-        console.log(lottoService.getCheckWinningLink(nextRound, numbers));
+        const nextRound = getNextLottoRound();
+        console.log(lottoService.getCheckWinningLink(numbers, nextRound));
 
         await lazyRun(() => lottoService.destroy(), seconds(1));
       },

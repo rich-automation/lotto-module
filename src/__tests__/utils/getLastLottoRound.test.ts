@@ -1,7 +1,7 @@
 import { CONST } from '../../constants';
-import { getCurrentLottoRound } from '../../utils/getCurrentLottoRound';
+import { getLastLottoRound } from '../../utils/getLastLottoRound';
 
-describe('getCurrentLottoRound', () => {
+describe('getLastLottoRound', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -12,7 +12,7 @@ describe('getCurrentLottoRound', () => {
     Date.now = jest.fn(() => fixedDate.getTime());
 
     const expectedRound = 1000;
-    const result = getCurrentLottoRound();
+    const result = getLastLottoRound();
     expect(result).toEqual(expectedRound);
   });
 });
