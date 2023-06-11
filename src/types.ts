@@ -4,9 +4,11 @@ export interface LottoServiceInterface {
   destroy(): Promise<void>;
 
   signIn(id: string, password: string): Promise<string>;
+
   signInWithCookie(cookie: string): Promise<string>;
 
   check(numbers: number[][], volume?: number): Promise<{ rank: number; matchedNumbers: number[] }[]>;
+
   purchase(amount: number): Promise<number[][]>;
 
   getCheckWinningLink(numbers: number[][], round: number): string;
@@ -20,29 +22,41 @@ export interface BrowserConfigs {
     width: number;
     height: number;
   };
+
   [key: string]: unknown;
+
   args?: string[];
 }
+
 export interface BrowserControllerInterface {
   configs: BrowserConfigs;
 
   focus(pageIndex?: number): Promise<BrowserPageInterface>;
+
   cleanPages(remainingPageIndex: number[]): Promise<void>;
+
   close(): Promise<void>;
 }
 
 export interface BrowserPageInterface {
   url(): Promise<string>;
+
   goto(url: string): Promise<void>;
+
   fill(selector: string, value: string | number): Promise<void>;
   click(selector: string, domDirect?: boolean): Promise<void>;
   select(selector: string, value: string): Promise<void>;
+
   querySelectorAll<T>(selector: string, callback: (elems: FakeDOMElement[]) => T): Promise<T>;
+
   wait(time: number): Promise<void>;
+
   wait(type: 'load'): Promise<void>;
+
   wait(type: 'idle'): Promise<void>;
 
   getCookies(): Promise<StringifiedCookies>;
+
   setCookies(cookies: StringifiedCookies): Promise<void>;
 
   on(event: BrowserPageEvents, callback: (...args: any[]) => void): Unsubscribe;

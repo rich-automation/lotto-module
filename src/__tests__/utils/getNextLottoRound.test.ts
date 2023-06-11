@@ -1,5 +1,5 @@
 import { CONST } from '../../constants';
-import {getNextLottoRound} from "../../utils/getNextLottoRound";
+import { getNextLottoRound } from '../../utils/getNextLottoRound';
 
 describe('getNextLottoRound', () => {
   afterEach(() => {
