@@ -10,6 +10,7 @@ describe('PuppeteerPage', () => {
     waitForNavigation: jest.Mock;
     type: jest.Mock;
     click: jest.Mock;
+    evaluate: jest.Mock;
     url: jest.Mock;
     cookies: jest.Mock;
     off: jest.Mock;
@@ -23,6 +24,7 @@ describe('PuppeteerPage', () => {
       goto: jest.fn(),
       type: jest.fn(),
       click: jest.fn(),
+      evaluate: jest.fn(),
       select: jest.fn(),
       $$eval: jest.fn(),
       cookies: jest.fn(),
@@ -59,6 +61,11 @@ describe('PuppeteerPage', () => {
   it('should call page.click() when click() is called', async () => {
     await puppeteerPage.click('#submit-button');
     expect(mockPage.click).toHaveBeenCalledWith('#submit-button');
+  });
+
+  it('should call page.evaluate() when click() is called with domDirect', async () => {
+    await puppeteerPage.click('#submit-button', true);
+    expect(mockPage.evaluate).toHaveBeenCalledWith(expect.any(Function), '#submit-button');
   });
 
   it('should call page.select() when select() is called', async () => {

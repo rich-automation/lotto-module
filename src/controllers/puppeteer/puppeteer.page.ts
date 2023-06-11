@@ -25,11 +25,11 @@ export class PuppeteerPage implements BrowserPageInterface {
     await this.page.type(selector, value.toString());
   }
 
-  async click(selector: string, useWaitForSelector = false) {
-    if (useWaitForSelector) {
-      const handle = await this.page.waitForSelector(selector, { timeout: 15000 });
-      this.logger?.debug('[PuppeteerPage]', '[click]', 'handle', handle);
-      handle?.click();
+  async click(selector: string, domDirect = false) {
+    if (domDirect) {
+      // @ts-ignore
+      await this.page.evaluate(s => document.querySelector(s).click(), selector);
+      await this.wait(250);
     } else {
       await this.page.click(selector);
     }

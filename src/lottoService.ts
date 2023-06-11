@@ -135,18 +135,10 @@ export class LottoService implements LottoServiceInterface {
 
     // click purchase button
     this.logger.debug('[purchase]', 'click purchase button');
-    await page.click(SELECTORS.PURCHASE_BTN);
+    await page.click(SELECTORS.PURCHASE_BTN, true);
+
     this.logger.debug('[purchase]', 'click purchase confirm button');
-    try {
-      await page.click(SELECTORS.PURCHASE_CONFIRM_BTN, true);
-    } catch (e) {
-      this.logger.debug('[purchase]', 'purchase confirm failure', e);
-      this.logger.debug('[purchase]', 'print node');
-      await page.querySelectorAll(SELECTORS.PURCHASE_CONFIRM_BTN, elems => {
-        this.logger.debug('[purchase]', elems);
-      });
-      throw e;
-    }
+    await page.click(SELECTORS.PURCHASE_CONFIRM_BTN, true);
 
     await page.wait(1000);
 
