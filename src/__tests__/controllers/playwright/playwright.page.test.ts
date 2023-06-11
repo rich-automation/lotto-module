@@ -65,7 +65,7 @@ describe('PlaywrightPage', () => {
 
   it('should call page.click() when click() is called', async () => {
     await puppeteerPage.click('#submit-button');
-    expect(mockPage.click).toHaveBeenCalledWith('#submit-button');
+    expect(mockPage.click).toHaveBeenCalledWith('#submit-button', { timeout: 0 });
   });
 
   it('should call page.evaluate() when click() is called with domDirect', async () => {
