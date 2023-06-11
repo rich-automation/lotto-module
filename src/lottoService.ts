@@ -122,6 +122,12 @@ export class LottoService implements LottoServiceInterface {
     const page = await this.browserController.focus(0);
     await page.goto(URLS.LOTTO_645);
 
+    // remove alert in linux env (비정상적인 방법으로 접속)
+    if (process.env.CI) {
+      this.logger.debug('[purchase]', 'click environment alert confirm');
+      await page.click(SELECTORS.ENVIRONMENT_ALERT_CONFIRM);
+    }
+
     // click auto button
     this.logger.debug('[purchase]', 'click purchase type button -> auto');
     await page.click(SELECTORS.PURCHASE_TYPE_RANDOM_BTN);
