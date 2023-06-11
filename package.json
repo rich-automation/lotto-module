@@ -22,6 +22,7 @@
   "files": [
     "lib",
     "package.json",
+    "playwright.config.ts",
     "README.md"
   ],
   "packageManager": "yarn@1.22.19",
@@ -35,7 +36,8 @@
     "build:esm": "tsc --project tsconfig.esm.json && echo '{\"type\": \"module\"}' > lib/esm/package.json",
     "build:dts": "tsc --project tsconfig.json --emitDeclarationOnly --declaration --declarationDir lib/typescript",
     "test": "jest --forceExit --detectOpenHandles",
-    "install:chrome": "node ./node_modules/puppeteer/install.js",
+    "install:puppeteer": "node ./node_modules/puppeteer/install.js",
+    "install:playwright": "npx playwright install --with-deps",
     "fix": "yarn fix:eslint && yarn fix:prettier",
     "fix:eslint": "eslint --fix src --ext js,jsx,ts,tsx ",
     "fix:prettier": "prettier --write \"src/**/*.{ts,tsx,js}\"",
@@ -47,12 +49,14 @@
   "dependencies": {
     "axios": "^1.3.5",
     "dayjs": "^1.11.7",
+    "playwright": "^1.35.0",
     "puppeteer": "^20.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-typescript": "^7.21.4",
+    "@playwright/test": "^1.35.0",
     "@types/jest": "^29.5.0",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",

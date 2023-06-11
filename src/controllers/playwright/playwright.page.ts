@@ -1,14 +1,17 @@
 import type { BrowserPageEvents, BrowserPageInterface, FakeDOMElement, StringifiedCookies } from '../../types';
-import { Page } from 'puppeteer';
+import type { Page } from 'playwright-core';
 import { deferred } from '../../utils/deferred';
 import { lazyRun } from '../../utils/lazyRun';
 import type { LoggerInterface } from '../../logger';
+import type { BrowserContext } from 'playwright';
 
-export class PuppeteerPage implements BrowserPageInterface {
+export class PlaywrightPage implements BrowserPageInterface {
+  context: BrowserContext;
   page: Page;
   logger?: LoggerInterface;
 
-  constructor(page: Page, logger?: LoggerInterface) {
+  constructor(context: BrowserContext, page: Page, logger?: LoggerInterface) {
+    this.context = context;
     this.page = page;
     this.logger = logger;
   }
@@ -32,12 +35,12 @@ export class PuppeteerPage implements BrowserPageInterface {
       await this.page.evaluate(s => document.querySelector(s).click(), selector);
       await this.wait(250);
     } else {
-      await this.page.click(selector);
+      await this.page.click(selector, { timeout: 0 });
     }
   }
 
   async select(selector: string, value: string) {
-    await this.page.select(selector, value);
+    await this.page.selectOption(selector, value);
   }
 
   querySelectorAll<T>(selector: string, callback: (elems: FakeDOMElement[]) => T): Promise<T> {
@@ -45,20 +48,20 @@ export class PuppeteerPage implements BrowserPageInterface {
   }
 
   async getCookies() {
-    const cookies = await this.page.cookies();
+    const cookies = await this.context.cookies();
     return JSON.stringify(cookies);
   }
 
   async setCookies(cookies: StringifiedCookies) {
     const cookieParams = JSON.parse(cookies);
-    await this.page.setCookie(...cookieParams);
+    await this.context.addCookies(cookieParams);
   }
 
   async wait(param: 'idle' | 'load' | number) {
     const p = deferred<void>();
 
     if (param === 'idle') {
-      await this.page.waitForNavigation({ waitUntil: 'networkidle0' });
+      await this.page.waitForNavigation({ waitUntil: 'networkidle' });
       p.resolve();
     }
 

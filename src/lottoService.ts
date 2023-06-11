@@ -24,11 +24,10 @@ export class LottoService implements LottoServiceInterface {
   constructor(configs?: BrowserConfigs) {
     this.logger = new Logger(configs?.logLevel, '[LottoService]');
     this.browserController = createBrowserController(
-      'puppeteer',
+      configs?.controller ?? 'playwright',
       {
         defaultViewport: { width: 1080, height: 1024 },
-        ...configs,
-        headless: configs?.headless === false ? false : 'new'
+        ...configs
       },
       this.logger
     );
@@ -135,10 +134,10 @@ export class LottoService implements LottoServiceInterface {
 
     // click purchase button
     this.logger.debug('[purchase]', 'click purchase button');
-    await page.click(SELECTORS.PURCHASE_BTN, true);
+    await page.click(SELECTORS.PURCHASE_BTN);
 
     this.logger.debug('[purchase]', 'click purchase confirm button');
-    await page.click(SELECTORS.PURCHASE_CONFIRM_BTN, true);
+    await page.click(SELECTORS.PURCHASE_CONFIRM_BTN);
 
     await page.wait(1000);
 

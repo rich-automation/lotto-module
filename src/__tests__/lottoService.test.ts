@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { getCurrentLottoRound, LottoService } from '../index';
+import { BrowserConfigs, getCurrentLottoRound, LottoService } from '../index';
 import LottoError from '../lottoError';
 import { seconds } from '../utils/seconds';
 import { LogLevel } from '../logger';
@@ -10,13 +10,13 @@ import { getCheckWinningLink } from '../utils/getCheckWinningLink';
 dotenv.config();
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
 
-const configs = {
-  logLevel: LogLevel.DEBUG,
-  headless: true,
-  args: ['--no-sandbox']
-};
-
-describe('lottoService', function () {
+describe.each(['puppeteer', 'playwright'])('lottoService.%s', (controller: 'playwright' | 'puppeteer') => {
+  const configs: BrowserConfigs = {
+    controller,
+    logLevel: LogLevel.NONE,
+    headless: true,
+    args: ['--no-sandbox']
+  };
   let validCookies;
 
   afterEach(() => {
@@ -229,9 +229,9 @@ describe('lottoService', function () {
         const lottoService = new LottoService(configs);
 
         await lottoService.signIn(LOTTO_ID, LOTTO_PWD);
-        const numbers = await lottoService.purchase(5);
+        const numbers = await lottoService.purchase(1);
 
-        expect(numbers).toHaveLength(5);
+        expect(numbers).toHaveLength(1);
         expect(numbers[0]).toHaveLength(6);
 
         const nextRound = getCurrentLottoRound() + 1;

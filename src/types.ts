@@ -13,8 +13,9 @@ export interface LottoServiceInterface {
 }
 
 export interface BrowserConfigs {
+  controller?: 'puppeteer' | 'playwright';
   logLevel?: LogLevel;
-  headless?: boolean | 'new';
+  headless?: boolean;
   defaultViewport?: {
     width: number;
     height: number;
@@ -52,7 +53,7 @@ export type FakeDOMElement = {
   innerHTML: string;
   children: FakeDOMElement[];
 };
-export type BrowserPageEvents = 'load' | 'close' | 'dialog' | 'response';
+export type BrowserPageEvents = 'response';
 export type Unsubscribe = () => void;
 export type StringifiedCookies = string;
 

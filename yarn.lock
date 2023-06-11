@@ -1413,6 +1413,16 @@
   dependencies:
     "@octokit/openapi-types" "^17.2.0"
 
+"@playwright/test@^1.35.0":
+  version "1.35.0"
+  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.35.0.tgz#532603399a0dd46731fbc31a0df5ce357dafa486"
+  integrity sha512-6qXdd5edCBynOwsz1YcNfgX8tNWeuS9fxy5o59D0rvHXxRtjXRebB4gE4vFVfEMXl/z8zTnAzfOs7aQDEs8G4Q==
+  dependencies:
+    "@types/node" "*"
+    playwright-core "1.35.0"
+  optionalDependencies:
+    fsevents "2.3.2"
+
 "@pnpm/config.env-replace@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@pnpm/config.env-replace/-/config.env-replace-1.1.0.tgz#ab29da53df41e8948a00f2433f085f54de8b3a4c"
@@ -3056,7 +3066,7 @@ fs.realpath@^1.0.0:
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
 
-fsevents@^2.3.2:
+fsevents@2.3.2, fsevents@^2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
   integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
@@ -4896,6 +4906,18 @@ pkg-dir@^4.2.0:
   integrity sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==
   dependencies:
     find-up "^4.0.0"
+
+playwright-core@1.35.0:
+  version "1.35.0"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.35.0.tgz#b7871b742b4a5c8714b7fa2f570c280a061cb414"
+  integrity sha512-muMXyPmIx/2DPrCHOD1H1ePT01o7OdKxKj2ebmCAYvqhUy+Y1bpal7B0rdoxros7YrXI294JT/DWw2LqyiqTPA==
+
+playwright@^1.35.0:
+  version "1.35.0"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.35.0.tgz#4e3b3ea2495d6fd671700f77b2f97b3adedf80f1"
+  integrity sha512-xhFhsoBmKPQfj3dM+HbIiFVlqRCZp2rwdJd/QFd9YBuidabo3TkVv0iuxPQ4vZoMwtSI7qzjY93f5ohdC97hww==
+  dependencies:
+    playwright-core "1.35.0"
 
 prelude-ls@^1.2.1:
   version "1.2.1"

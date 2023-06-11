@@ -1,27 +1,24 @@
 import type { BrowserConfigs, BrowserControllerInterface } from '../../types';
-import puppeteer, { Browser } from 'puppeteer';
+import { chromium } from 'playwright';
+import type { BrowserContext } from 'playwright';
 import { deferred } from '../../utils/deferred';
-import { PuppeteerPage } from './puppeteer.page';
+import { PlaywrightPage } from './playwright.page';
 import { CONST } from '../../constants';
 import { type LoggerInterface } from '../../logger';
 
-export class PuppeteerController implements BrowserControllerInterface {
+export class PlaywrightController implements BrowserControllerInterface {
   configs: BrowserConfigs;
   logger: LoggerInterface;
-  browser!: Browser;
+  browser!: BrowserContext;
 
   constructor(configs: BrowserConfigs, logger: LoggerInterface) {
     this.configs = configs;
     this.logger = logger;
-    puppeteer
-      .launch({ ...this.configs, headless: this.configs.headless === true ? 'new' : this.configs.headless })
-      .then(async browser => {
-        this.browser = browser;
-      });
+    chromium.launch(this.configs).then(async browser => (this.browser = await browser.newContext()));
   }
 
   private getBrowser = async () => {
-    const p = deferred<Browser>();
+    const p = deferred<BrowserContext>();
 
     if (this.browser) {
       p.resolve(this.browser);
@@ -45,17 +42,17 @@ export class PuppeteerController implements BrowserControllerInterface {
 
   focus = async (pageIndex = -1) => {
     const browser = await this.getBrowser();
-    const pages = await browser.pages();
+    const pages = browser.pages();
 
     if (pages.length === 0) {
       const page = await browser.newPage();
-      return new PuppeteerPage(page, this.logger);
+      return new PlaywrightPage(browser, page, this.logger);
     } else {
       const isWithinRange = Math.max(0, Math.min(pageIndex, pages.length - 1)) === pageIndex;
       const page = pages.at(isWithinRange ? pageIndex : -1);
       if (!page) throw new Error('Page is not found');
 
-      return new PuppeteerPage(page, this.logger);
+      return new PlaywrightPage(browser, page, this.logger);
     }
   };
 
@@ -66,7 +63,7 @@ export class PuppeteerController implements BrowserControllerInterface {
 
   cleanPages = async (remainingPageIndex: number[]) => {
     const browser = await this.getBrowser();
-    const pages = await browser.pages();
+    const pages = browser.pages();
 
     const promises = pages.map(async (page, index) => {
       if (!remainingPageIndex.includes(index)) {
