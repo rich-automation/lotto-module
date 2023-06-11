@@ -1,6 +1,6 @@
 import type { BrowserConfigs, BrowserControllerInterface } from '../../types';
 import { chromium } from 'playwright';
-import type { BrowserContext } from 'playwright';
+import type { Browser, BrowserContext } from 'playwright';
 import { deferred } from '../../utils/deferred';
 import { PlaywrightPage } from './playwright.page';
 import { CONST } from '../../constants';
@@ -9,19 +9,26 @@ import { type LoggerInterface } from '../../logger';
 export class PlaywrightController implements BrowserControllerInterface {
   configs: BrowserConfigs;
   logger: LoggerInterface;
-  browser!: BrowserContext;
+  browser!: Browser;
+  context!: BrowserContext;
 
   constructor(configs: BrowserConfigs, logger: LoggerInterface) {
     this.configs = configs;
     this.logger = logger;
-    chromium.launch(this.configs).then(async browser => (this.browser = await browser.newContext()));
+    chromium.launch(this.configs).then(async browser => {
+      this.browser = browser;
+      this.context = await browser.newContext({
+        userAgent:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+      });
+    });
   }
 
-  private getBrowser = async () => {
+  private getBrowserContext = async () => {
     const p = deferred<BrowserContext>();
 
-    if (this.browser) {
-      p.resolve(this.browser);
+    if (this.context) {
+      p.resolve(this.context);
     } else {
       let retry = 0;
 
@@ -29,9 +36,9 @@ export class PlaywrightController implements BrowserControllerInterface {
         if (CONST.BROWSER_INIT_RETRY_COUNT < retry) {
           clearInterval(interval);
           p.reject(new Error('Browser is not initialized'));
-        } else if (this.browser) {
+        } else if (this.context) {
           clearInterval(interval);
-          p.resolve(this.browser);
+          p.resolve(this.context);
         }
         retry++;
       }, CONST.BROWSER_INIT_RETRY_TIMEOUT);
@@ -41,7 +48,7 @@ export class PlaywrightController implements BrowserControllerInterface {
   };
 
   focus = async (pageIndex = -1) => {
-    const browser = await this.getBrowser();
+    const browser = await this.getBrowserContext();
     const pages = browser.pages();
 
     if (pages.length === 0) {
@@ -57,12 +64,13 @@ export class PlaywrightController implements BrowserControllerInterface {
   };
 
   close = async () => {
-    const browser = await this.getBrowser();
-    return browser.close();
+    const context = await this.getBrowserContext();
+    await context.close();
+    return this.browser.close();
   };
 
   cleanPages = async (remainingPageIndex: number[]) => {
-    const browser = await this.getBrowser();
+    const browser = await this.getBrowserContext();
     const pages = browser.pages();
 
     const promises = pages.map(async (page, index) => {
