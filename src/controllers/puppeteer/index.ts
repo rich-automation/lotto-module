@@ -13,7 +13,10 @@ export class PuppeteerController implements BrowserControllerInterface {
   constructor(configs: BrowserConfigs, logger: LoggerInterface) {
     this.configs = configs;
     this.logger = logger;
-    puppeteer.launch(this.configs).then(browser => (this.browser = browser));
+    puppeteer.launch(this.configs).then(async browser => {
+      this.browser = browser;
+      await this.browser.userAgent('')
+    });
   }
 
   private getBrowser = async () => {
