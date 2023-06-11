@@ -15,7 +15,6 @@ export class PuppeteerController implements BrowserControllerInterface {
     this.logger = logger;
     puppeteer.launch(this.configs).then(async browser => {
       this.browser = browser;
-      await this.browser.userAgent('')
     });
   }
 

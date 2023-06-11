@@ -11,6 +11,9 @@ export class PuppeteerPage implements BrowserPageInterface {
   constructor(page: Page, logger?: LoggerInterface) {
     this.page = page;
     this.logger = logger;
+    this.page.setUserAgent(
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+    );
   }
 
   async url() {
@@ -27,6 +30,7 @@ export class PuppeteerPage implements BrowserPageInterface {
 
   async click(selector: string, domDirect = false) {
     if (domDirect) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       await this.page.evaluate(s => document.querySelector(s).click(), selector);
       await this.wait(250);
