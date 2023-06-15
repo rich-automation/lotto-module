@@ -17,7 +17,7 @@ yarn add @rich-automation/lotto
 ```
 
 ## Preparation
-1. 내부적으로 puppeteer를 사용하므로 직접 실행하기 위해서는 머신에 chrome이나 chromium이 설치되어 있어야합니다.
+1. 내부적으로 playwright/puppeteer를 사용하므로 머신에 chromium 을 미리 설치해주셔야 합니다. ([link](https://github.com/rich-automation/lotto-module/blob/main/package.json#L38-L39))
 2. [동행복권](https://dhlottery.co.kr/common.do?method=main) 사이트를 통해 구매가 이루어지며 예치금 충전은 지원하지 않으므로 미리 동행복권 계정에 예치금을 충전해두어야합니다.
 
 ## Usage
@@ -31,10 +31,10 @@ const lottoService = new LottoService();
 ```
 LottoService 클래스의 생성자는 BrowserConfigs를 인수로 받을 수 있습니다. 인수로 전달된 configs는 다음과 같은 속성을 가질 수 있습니다:
 
+- `controller(default: 'playwright')`: 내부적으로 어떤 컨트롤러(puppeteer/playwright)를 사용할 지 지정할 수 있습니다.
 - `headless(default: false)`: 브라우저의 헤드리스 모드 여부를 설정합니다.
 - `defaultViewport(default: { width: 1080, height: 1024 })`: 브라우저의 기본 뷰포트 크기를 설정합니다.
 - `logLevel(default:2)`:콘솔 로그 수준을 설정합니다. (NONE = -1, ERROR = 0, WARN = 1, INFO = 2, DEBUG = 3)
-- 기타 puppeteer의 launch 메소드에 전달할 수 있는 속성들
 ```js
 //example
 import {LottoService, LogLevel} from '@rich-automation/lotto'
