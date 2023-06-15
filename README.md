@@ -101,20 +101,20 @@ console.log(link) //"https://dhlottery.co.kr/qr.do?method=winQr&v=1071q010203040
 
 ## Method
 ### signIn
-- `(id: string, password: string)=>Promise&lt;string&gt;`
+- `(id: string, password: string) => Promise<string>`
 - description: id와 pwd를 입력받아 동행복권에 로그인합니다. 성공할경우 로그인 쿠키를 반환합니다.
 ### signInWithCookie
-- `(cookies: string)=>Promise&lt;string&gt;`
+- `(cookies: string) => Promise<string>`
 - description: 로그인 쿠키를 입력받아 동행복권에 로그인합니다. 성공할경우 로그인 쿠키를 반환합니다.
 ### purchase
-- `(amount: number = 5):Promise&lt;number[][]&gt`
+- `(amount?: number) => Promise<number[][]>`
 - description: 구매할 게임 횟수를 입력받아 로또를 구매하고, 구매한 번호를 이차원 배열 형태로 반환합니다. amount는 1~5사이 값을 가집니다.
 ### check
-- `(numbers: number[][], round: number = getLastLottoRound()):Promise&lt;{rank:number;matchedNumbers:number[]}[]&gt;`
+- `(numbers: number[][], round?: number) => Promise<{ rank:number; matchedNumbers:number[] }[]>`
 - description: 회차와 해당 회차에 구매한 로또번호를 입력받아 당첨 등수(rank)와 맞춘 번호(matchedNumbers)목록을 반환합니다. 회차를 지정하지 않으면 최신 회차를 기준으로 확인합니다.
 ### getCheckWinningLink
-- `(numbers: number[][], round: number = getNextLottoRound()): string`
+- `(numbers: number[][], round?: number) => string`
 - description: 회차와 구매한 로또 번호를 입력받아 당첨 확인 링크를 생성합니다. 로또 번호는 해당 회차에 구매한 모든 게임을 이차원 배열 형태로 입력받습니다. 회차를 지정하지 않으면 다음 회차를 기준으로 링크를 생성합니다.
 ### destroy
-- `():Promise&lt;void&gt;`
+- `() => Promise<void>`
 - description: LottoService 인스턴스에서 사용한 브라우저 컨트롤러를 종료합니다.
