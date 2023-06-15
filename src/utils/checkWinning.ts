@@ -1,4 +1,4 @@
-export const checkWinning = async (myNumber: number[], winningNumbers: number[]) => {
+export const checkWinning = (myNumber: number[], winningNumbers: number[]) => {
   const mainWinningNumbers = winningNumbers.slice(0, 6);
   const bonusNumber = winningNumbers.at(-1) as number;
 

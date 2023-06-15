@@ -1,4 +1,7 @@
 export { LottoService } from './lottoService';
-export { getCurrentLottoRound } from './utils/getCurrentLottoRound';
 export { LogLevel } from './logger';
 export * from './types';
+export { getLastLottoRound } from './utils/getLastLottoRound';
+export { getNextLottoRound } from './utils/getNextLottoRound';
+export { getCheckWinningLink } from './utils/getCheckWinningLink';
+export { checkWinning } from './utils/checkWinning';

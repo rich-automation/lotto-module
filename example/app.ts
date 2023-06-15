@@ -1,5 +1,5 @@
-import { LottoService } from '../src';
 import { LogLevel } from '../src/logger';
+import { LottoService } from '../src/lottoService';
 // import * as dotenv from 'dotenv';
 // dotenv.config();
 
