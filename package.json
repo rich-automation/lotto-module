@@ -1,6 +1,6 @@
 {
   "name": "@rich-automation/lotto",
-  "version": "0.1.7",
+  "version": "1.0.0",
   "description": "Lotto module",
   "publishConfig": {
     "access": "public",
