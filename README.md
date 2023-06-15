@@ -1,5 +1,6 @@
 # @rich-automation/lotto
 
+[![npm](https://img.shields.io/npm/v/@rich-automation/lotto.svg?style=popout&colorB=yellow)](https://www.npmjs.com/package/@rich-automation/lotto)
 [![ci](https://github.com/rich-automation/lotto-module/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rich-automation/lotto-module/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/rich-automation/lotto-module/branch/main/graph/badge.svg?token=18IAW1OW77)](https://codecov.io/gh/rich-automation/lotto-module)
 
