@@ -71,7 +71,7 @@ console.log(numbers); //[[ 1, 14, 21, 27, 30, 44 ],[ 4, 5, 27, 29, 40, 44 ],[ 9,
 ```js
 import {getLastLottoRound,LottoService} from "@rich-automation/lotto";
 
-const numbers = "[[1,2,3,4,5,6],[5,6,7,8,9,10]";
+const numbers = [[1,2,3,4,5,6],[5,6,7,8,9,10]];
 
 const lottoService = new LottoService({
     headless:true
@@ -79,14 +79,14 @@ const lottoService = new LottoService({
 
 const currentRound = getLastLottoRound();
 
-const result = await lottoService.check(numbers,currentRound)
+const result = await lottoService.check(numbers, currentRound)
 console.log(result) //[{rank:1,matchedNumbers:[1,2,3,4,5,6]},{rank:5,matchedNumbers:[5,6]]
 ```
 다음 회차 당첨 링크 생성
 ```js
 import {getNextLottoRound,LottoService} from "@rich-automation/lotto";
 
-const numbers = "[[1,2,3,4,5,6],[5,6,7,8,9,10]";
+const numbers = [[1,2,3,4,5,6],[5,6,7,8,9,10]];
 
 
 const lottoService = new LottoService({
@@ -94,7 +94,7 @@ const lottoService = new LottoService({
 });
 
 const nextRound = getNextLottoRound();
-const link = lottoService.getCheckWinningLink(numbers,nextRound);
+const link = lottoService.getCheckWinningLink(numbers, nextRound);
 console.log(link) //"https://dhlottery.co.kr/qr.do?method=winQr&v=1071q010203040506q050607080910";
 
 ```
