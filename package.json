@@ -35,7 +35,7 @@
     "build:esm": "tsc --project tsconfig.esm.json && echo '{\"type\": \"module\"}' > lib/esm/package.json",
     "build:dts": "tsc --project tsconfig.json --emitDeclarationOnly --declaration --declarationDir lib/typescript",
     "test": "jest --forceExit --detectOpenHandles",
-    "install:puppeteer": "node ./node_modules/puppeteer/install.js",
+    "install:puppeteer": "node ./node_modules/puppeteer/install.mjs",
     "install:playwright": "npx playwright install chromium --with-deps",
     "fix": "yarn fix:eslint && yarn fix:prettier",
     "fix:eslint": "eslint --fix src --ext js,jsx,ts,tsx ",

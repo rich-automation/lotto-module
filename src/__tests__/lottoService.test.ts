@@ -14,7 +14,16 @@ import { LottoService } from '../lottoService';
 dotenv.config();
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
 
-describe.each([puppeteer, chromium])('lottoService.%s', controller => {
+describe.each([
+  {
+    name: 'puppeteer',
+    controller: puppeteer
+  },
+  {
+    name: 'playwright',
+    controller: chromium
+  }
+])('lottoService.$name', ({ controller }) => {
   const configs: BrowserConfigs = {
     controller,
     logLevel: LogLevel.NONE,
