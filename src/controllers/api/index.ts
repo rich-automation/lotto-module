@@ -3,13 +3,14 @@ import type { Browser, BrowserContext } from 'playwright';
 import { type LoggerInterface } from '../../logger';
 
 export class APIModeController implements BrowserControllerInterface {
+  configs: BrowserConfigs;
   logger: LoggerInterface;
-  configs!: BrowserConfigs;
   browser!: Browser;
   context!: BrowserContext;
 
-  constructor(_: BrowserConfigs, logger: LoggerInterface) {
+  constructor(configs: BrowserConfigs, logger: LoggerInterface) {
     this.logger = logger;
+    this.configs = configs;
   }
 
   focus = async () => {

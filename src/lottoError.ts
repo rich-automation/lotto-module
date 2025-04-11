@@ -2,6 +2,7 @@ import { invertObject } from './utils/invertObject';
 
 const BaseErrorCode = {
   NETWORK_ERROR: 100001,
+  NOT_SUPPORTED: 110000,
   UNKNOWN_ERROR: 199999
 } as const;
 
@@ -30,7 +31,8 @@ const ErrorMessage: Record<ErrorCodeNumber, string> = {
   [ErrorCode.INVALID_ROUND]: '로또 회차가 올바르지 않습니다.',
   [ErrorCode.INVALID_LOTTO_NUMBER]: '로또 번호가 올바르지 않습니다.',
   [ErrorCode.NOT_AUTHENTICATED]: '인증되지 않았습니다.',
-  [ErrorCode.PURCHASE_UNAVAILABLE]: '현재는 로또 구매가 불가능합니다.'
+  [ErrorCode.PURCHASE_UNAVAILABLE]: '현재는 로또 구매가 불가능합니다.',
+  [ErrorCode.NOT_SUPPORTED]: '지원되지 않는 기능입니다.'
 };
 
 export default class LottoError extends Error {
@@ -57,6 +59,9 @@ export default class LottoError extends Error {
   }
   static PurchaseUnavailable() {
     return new LottoError(ErrorCode.PURCHASE_UNAVAILABLE);
+  }
+  static NotSupported(message?: string) {
+    return new LottoError(ErrorCode.NOT_SUPPORTED, message);
   }
 
   static get code() {

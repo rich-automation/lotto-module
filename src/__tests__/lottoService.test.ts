@@ -270,3 +270,33 @@ describe.each([
     });
   });
 });
+
+describe('lottoService.api', () => {
+  const lottoService = new LottoService({
+    controller: 'api'
+  });
+
+  async function expectError(fn: () => Promise<unknown>, expectedCode: number) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (e instanceof LottoError) {
+        expect(e.code).toBe(expectedCode);
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  it('should not throw for supported API methods ', async () => {
+    await expect(lottoService.check([[1, 2, 3, 4, 5, 6]], 1)).resolves.not.toThrow();
+    expect(lottoService.getCheckWinningLink([[1, 2, 3, 4, 5, 6]], 1)).toStrictEqual(expect.any(String));
+  });
+
+  it('should throw when using unsupported methods', async () => {
+    await expectError(() => lottoService.destroy(), LottoError.code.NOT_SUPPORTED);
+    await expectError(() => lottoService.purchase(), LottoError.code.NOT_SUPPORTED);
+    await expectError(() => lottoService.signIn('id', 'pwd'), LottoError.code.NOT_SUPPORTED);
+    await expectError(() => lottoService.signInWithCookie('[]'), LottoError.code.NOT_SUPPORTED);
+  });
+});

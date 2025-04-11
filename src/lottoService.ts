@@ -36,7 +36,7 @@ export class LottoService implements LottoServiceInterface {
 
   destroy = async () => {
     if (this.browserController.configs.controller === 'api') {
-      throw new Error('API mode does not support destroy');
+      throw LottoError.NotSupported('API mode does not support destroy.');
     }
 
     return lazyRun(this.browserController.close, CONST.BROWSER_DESTROY_SAFE_TIMEOUT);
@@ -44,7 +44,7 @@ export class LottoService implements LottoServiceInterface {
 
   signInWithCookie = async (cookies: string) => {
     if (this.browserController.configs.controller === 'api') {
-      throw new Error('API mode does not support signInWithCookie');
+      throw LottoError.NotSupported('API mode does not support signInWithCookie.');
     }
 
     // 쿠키 설정 & 페이지 이동
@@ -73,7 +73,7 @@ export class LottoService implements LottoServiceInterface {
 
   signIn = async (id: string, password: string) => {
     if (this.browserController.configs.controller === 'api') {
-      throw new Error('API mode does not support signIn');
+      throw LottoError.NotSupported('API mode does not support signIn.');
     }
 
     const p = deferred<string>();
@@ -127,7 +127,7 @@ export class LottoService implements LottoServiceInterface {
 
   purchase = async (amount = 5) => {
     if (this.browserController.configs.controller === 'api') {
-      throw new Error('API mode does not support purchase');
+      throw LottoError.NotSupported('API mode does not support purchase.');
     }
 
     if (!this.context.authenticated) throw LottoError.NotAuthenticated();
