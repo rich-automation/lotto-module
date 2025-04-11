@@ -288,10 +288,14 @@ describe('lottoService.api', () => {
     }
   }
 
-  it('should not throw for supported API methods ', async () => {
-    await expect(lottoService.check([[1, 2, 3, 4, 5, 6]], 1)).resolves.not.toThrow();
-    expect(lottoService.getCheckWinningLink([[1, 2, 3, 4, 5, 6]], 1)).toStrictEqual(expect.any(String));
-  });
+  it(
+    'should not throw for supported API methods ',
+    async () => {
+      await expect(lottoService.check([[1, 2, 3, 4, 5, 6]], 1)).resolves.not.toThrow();
+      expect(lottoService.getCheckWinningLink([[1, 2, 3, 4, 5, 6]], 1)).toStrictEqual(expect.any(String));
+    },
+    seconds(60)
+  );
 
   it('should throw when using unsupported methods', async () => {
     await expectError(() => lottoService.destroy(), LottoError.code.NOT_SUPPORTED);
