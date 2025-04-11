@@ -1,9 +1,12 @@
 import * as dotenv from 'dotenv';
+import puppeteer from 'puppeteer';
+import { chromium } from 'playwright';
+
 import LottoError from '../lottoError';
 import { seconds } from '../utils/seconds';
 import { LogLevel } from '../logger';
 import { lazyRun } from '../utils/lazyRun';
-import { BrowserConfigs, BrowserPageInterface } from '../types';
+import type { BrowserConfigs, BrowserPageInterface } from '../types';
 import { getCheckWinningLink } from '../utils/getCheckWinningLink';
 import { getNextLottoRound } from '../utils/getNextLottoRound';
 import { LottoService } from '../lottoService';
@@ -11,14 +14,23 @@ import { LottoService } from '../lottoService';
 dotenv.config();
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
 
-describe.each(['puppeteer', 'playwright'])('lottoService.%s', (controller: 'playwright' | 'puppeteer') => {
+describe.each([
+  {
+    name: 'puppeteer',
+    controller: puppeteer
+  },
+  {
+    name: 'playwright',
+    controller: chromium
+  }
+])('lottoService.$name', ({ controller }) => {
   const configs: BrowserConfigs = {
     controller,
     logLevel: LogLevel.NONE,
     headless: true,
     args: ['--no-sandbox']
   };
-  let validCookies;
+  let validCookies: string;
 
   afterEach(() => {
     jest.restoreAllMocks();
@@ -256,5 +268,39 @@ describe.each(['puppeteer', 'playwright'])('lottoService.%s', (controller: 'play
 
       expect(result).toStrictEqual(expected);
     });
+  });
+});
+
+describe('lottoService.api', () => {
+  const lottoService = new LottoService({
+    controller: 'api'
+  });
+
+  async function expectError(fn: () => Promise<unknown>, expectedCode: number) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (e instanceof LottoError) {
+        expect(e.code).toBe(expectedCode);
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  it(
+    'should not throw for supported API methods ',
+    async () => {
+      await expect(lottoService.check([[1, 2, 3, 4, 5, 6]], 1)).resolves.not.toThrow();
+      expect(lottoService.getCheckWinningLink([[1, 2, 3, 4, 5, 6]], 1)).toStrictEqual(expect.any(String));
+    },
+    seconds(60)
+  );
+
+  it('should throw when using unsupported methods', async () => {
+    await expectError(() => lottoService.destroy(), LottoError.code.NOT_SUPPORTED);
+    await expectError(() => lottoService.purchase(), LottoError.code.NOT_SUPPORTED);
+    await expectError(() => lottoService.signIn('id', 'pwd'), LottoError.code.NOT_SUPPORTED);
+    await expectError(() => lottoService.signInWithCookie('[]'), LottoError.code.NOT_SUPPORTED);
   });
 });
