@@ -1,20 +1,24 @@
 import type { BrowserConfigs, BrowserControllerInterface } from '../../types';
-import puppeteer, { Browser } from 'puppeteer';
 import { deferred } from '../../utils/deferred';
 import { PuppeteerPage } from './puppeteer.page';
 import { CONST } from '../../constants';
 import { type LoggerInterface } from '../../logger';
+import type { PuppeteerNode, Browser } from 'puppeteer';
 
-export class PuppeteerController implements BrowserControllerInterface {
-  configs: BrowserConfigs;
+export class PuppeteerController implements BrowserControllerInterface<PuppeteerNode> {
+  configs: BrowserConfigs<PuppeteerNode>;
   logger: LoggerInterface;
   browser!: Browser;
 
-  constructor(configs: BrowserConfigs, logger: LoggerInterface) {
+  constructor(configs: BrowserConfigs<PuppeteerNode>, logger: LoggerInterface) {
     this.configs = configs;
     this.logger = logger;
-    puppeteer
-      .launch({ ...this.configs, headless: this.configs.headless === true ? 'new' : this.configs.headless })
+
+    configs.controller
+      .launch({
+        ...this.configs,
+        headless: this.configs.headless === true
+      })
       .then(async browser => {
         this.browser = browser;
       });

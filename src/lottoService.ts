@@ -23,10 +23,9 @@ export class LottoService implements LottoServiceInterface {
   browserController: BrowserControllerInterface;
   logger: LoggerInterface;
 
-  constructor(configs?: BrowserConfigs) {
-    this.logger = new Logger(configs?.logLevel, '[LottoService]');
+  constructor(configs: BrowserConfigs) {
+    this.logger = new Logger(configs.logLevel, '[LottoService]');
     this.browserController = createBrowserController(
-      configs?.controller ?? 'playwright',
       {
         defaultViewport: { width: 1080, height: 1024 },
         ...configs
@@ -36,10 +35,18 @@ export class LottoService implements LottoServiceInterface {
   }
 
   destroy = async () => {
+    if (this.browserController.configs.controller === 'api') {
+      throw new Error('API mode does not support destroy');
+    }
+
     return lazyRun(this.browserController.close, CONST.BROWSER_DESTROY_SAFE_TIMEOUT);
   };
 
   signInWithCookie = async (cookies: string) => {
+    if (this.browserController.configs.controller === 'api') {
+      throw new Error('API mode does not support signInWithCookie');
+    }
+
     // 쿠키 설정 & 페이지 이동
     const page = await this.browserController.focus(0);
     this.logger.debug('[signInWithCookie]', 'setCookies');
@@ -65,6 +72,10 @@ export class LottoService implements LottoServiceInterface {
   };
 
   signIn = async (id: string, password: string) => {
+    if (this.browserController.configs.controller === 'api') {
+      throw new Error('API mode does not support signIn');
+    }
+
     const p = deferred<string>();
 
     queueMicrotask(async () => {
@@ -115,6 +126,10 @@ export class LottoService implements LottoServiceInterface {
   };
 
   purchase = async (amount = 5) => {
+    if (this.browserController.configs.controller === 'api') {
+      throw new Error('API mode does not support purchase');
+    }
+
     if (!this.context.authenticated) throw LottoError.NotAuthenticated();
     this.logger.debug('[purchase]', 'validatePurchaseAvailability');
     validatePurchaseAvailability();

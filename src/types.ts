@@ -1,4 +1,6 @@
 import type { LogLevel } from './logger';
+import type { PuppeteerNode } from 'puppeteer';
+import type { BrowserType } from 'playwright-core';
 
 export interface LottoServiceInterface {
   destroy(): Promise<void>;
@@ -14,8 +16,9 @@ export interface LottoServiceInterface {
   getCheckWinningLink(numbers: number[][], round: number): string;
 }
 
-export interface BrowserConfigs {
-  controller?: 'puppeteer' | 'playwright';
+export type BrowserController = PuppeteerNode | BrowserType | 'api';
+export interface BrowserConfigs<T extends BrowserController = BrowserController> {
+  controller: T;
   logLevel?: LogLevel;
   headless?: boolean;
   defaultViewport?: {
@@ -28,8 +31,8 @@ export interface BrowserConfigs {
   args?: string[];
 }
 
-export interface BrowserControllerInterface {
-  configs: BrowserConfigs;
+export interface BrowserControllerInterface<T extends BrowserController = BrowserController> {
+  configs: BrowserConfigs<T>;
 
   focus(pageIndex?: number): Promise<BrowserPageInterface>;
 

@@ -1,21 +1,22 @@
 import type { BrowserConfigs, BrowserControllerInterface } from '../../types';
-import { chromium } from 'playwright';
 import type { Browser, BrowserContext } from 'playwright';
+import type { BrowserType } from 'playwright-core';
 import { deferred } from '../../utils/deferred';
 import { PlaywrightPage } from './playwright.page';
 import { CONST } from '../../constants';
 import { type LoggerInterface } from '../../logger';
 
-export class PlaywrightController implements BrowserControllerInterface {
-  configs: BrowserConfigs;
+export class PlaywrightController implements BrowserControllerInterface<BrowserType> {
+  configs: BrowserConfigs<BrowserType>;
   logger: LoggerInterface;
   browser!: Browser;
   context!: BrowserContext;
 
-  constructor(configs: BrowserConfigs, logger: LoggerInterface) {
+  constructor(configs: BrowserConfigs<BrowserType>, logger: LoggerInterface) {
     this.configs = configs;
     this.logger = logger;
-    chromium.launch(this.configs).then(async browser => {
+
+    this.configs.controller.launch(this.configs).then(async browser => {
       this.browser = browser;
       this.context = await browser.newContext();
     });

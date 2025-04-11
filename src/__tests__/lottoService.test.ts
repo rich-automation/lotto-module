@@ -1,9 +1,12 @@
 import * as dotenv from 'dotenv';
+import puppeteer from 'puppeteer';
+import { chromium } from 'playwright';
+
 import LottoError from '../lottoError';
 import { seconds } from '../utils/seconds';
 import { LogLevel } from '../logger';
 import { lazyRun } from '../utils/lazyRun';
-import { BrowserConfigs, BrowserPageInterface } from '../types';
+import type { BrowserConfigs, BrowserPageInterface } from '../types';
 import { getCheckWinningLink } from '../utils/getCheckWinningLink';
 import { getNextLottoRound } from '../utils/getNextLottoRound';
 import { LottoService } from '../lottoService';
@@ -11,14 +14,14 @@ import { LottoService } from '../lottoService';
 dotenv.config();
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
 
-describe.each(['puppeteer', 'playwright'])('lottoService.%s', (controller: 'playwright' | 'puppeteer') => {
+describe.each([puppeteer, chromium])('lottoService.%s', controller => {
   const configs: BrowserConfigs = {
     controller,
     logLevel: LogLevel.NONE,
     headless: true,
     args: ['--no-sandbox']
   };
-  let validCookies;
+  let validCookies: string;
 
   afterEach(() => {
     jest.restoreAllMocks();

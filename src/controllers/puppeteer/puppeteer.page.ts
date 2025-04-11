@@ -1,5 +1,5 @@
 import type { BrowserPageEvents, BrowserPageInterface, FakeDOMElement, StringifiedCookies } from '../../types';
-import { Page } from 'puppeteer';
+import type { Page } from 'puppeteer';
 import { deferred } from '../../utils/deferred';
 import { lazyRun } from '../../utils/lazyRun';
 import type { LoggerInterface } from '../../logger';
