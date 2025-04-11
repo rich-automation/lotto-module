@@ -74,7 +74,7 @@ await lottoService.signIn(ID, PWD);
 
 const numbers = await lottoService.purchase(5);
 
-console.log(numbers);
+console.log(numbers); // [[ 1, 14, 21, 27, 30, 44 ],[ 4, 5, 27, 29, 40, 44 ],[ 9, 18, 19, 24, 38, 42 ],[ 4, 6, 13, 20, 38, 39 ],[ 8, 9, 10, 19, 32, 40 ]]
 ```
 
 ### 당첨 확인
@@ -93,7 +93,7 @@ const currentRound = getLastLottoRound();
 
 const result = await lottoService.check(numbers, currentRound);
 
-console.log(result);
+console.log(result); // [{rank:1,matchedNumbers:[1,2,3,4,5,6]},{rank:5,matchedNumbers:[5,6]]
 ```
 
 다음 회차 링크 생성:
@@ -104,7 +104,7 @@ import { getNextLottoRound } from '@rich-automation/lotto';
 const nextRound = getNextLottoRound();
 const link = lottoService.getCheckWinningLink(numbers, nextRound);
 
-console.log(link);
+console.log(link); // "https://dhlottery.co.kr/qr.do?method=winQr&v=1071q010203040506q050607080910";
 ```
 
 ## API
