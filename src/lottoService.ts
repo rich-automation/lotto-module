@@ -156,10 +156,12 @@ export class LottoService implements LottoServiceInterface {
     await page.wait(1000);
 
     // game result
-    this.logger.debug('[purchase]', 'print result');
-    return page.querySelectorAll(SELECTORS.PURCHASE_NUMBER_LIST, elems => {
+    const result = await page.querySelectorAll(SELECTORS.PURCHASE_NUMBER_LIST, elems => {
       return elems.map(it => Array.from(it.children).map(child => Number(child.innerHTML)));
     });
+    this.logger.debug('[purchase]', 'print result', result);
+
+    return result;
   };
 
   check = async (numbers: number[][], round: number = getLastLottoRound()) => {
