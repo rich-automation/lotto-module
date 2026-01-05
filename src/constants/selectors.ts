@@ -1,8 +1,8 @@
 export const SELECTORS = {
-  ID_INPUT: '#userId',
-  PWD_INPUT:
-    '#article > div:nth-child(2) > div > form > div > div.inner > fieldset > div.form > input[type=password]:nth-child(2)',
-  LOGIN_BUTTON: '#article > div:nth-child(2) > div > form > div > div.inner > fieldset > div.form > a',
+  ID_INPUT: '#inpUserId',
+  PWD_INPUT: '#inpUserPswdEncn',
+  LOGIN_BUTTON: '#btnLogin',
+  LOGIN_ERROR_POPUP: '.msgPop[role="alertdialog"]',
   ENVIRONMENT_ALERT_CONFIRM: 'input[value="확인"][onclick="javascript:closepopupLayerAlert();"]',
   PURCHASE_TYPE_RANDOM_BTN: 'a[href="#divWay2Buy1"]#num2',
   PURCHASE_AMOUNT_SELECT: 'select#amoundApply',

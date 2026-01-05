@@ -44,6 +44,19 @@ export class PuppeteerPage implements BrowserPageInterface {
     return this.page.$$eval(selector, callback);
   }
 
+  async exists(selector: string, containsText?: string): Promise<boolean> {
+    if (containsText) {
+      const elements = await this.page.$$(selector);
+      for (const el of elements) {
+        const text = await el.evaluate(node => node.textContent);
+        if (text?.includes(containsText)) return true;
+      }
+      return false;
+    }
+    const element = await this.page.$(selector);
+    return element !== null;
+  }
+
   async getCookies() {
     const cookies = await this.page.cookies();
     return JSON.stringify(cookies);

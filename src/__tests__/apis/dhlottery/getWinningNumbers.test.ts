@@ -13,14 +13,22 @@ describe('getWinningNumbers', () => {
 
   it('should return an array of winning numbers', async () => {
     const mockData = {
-      returnValue: 'success',
-      drwtNo1: 1,
-      drwtNo2: 2,
-      drwtNo3: 3,
-      drwtNo4: 4,
-      drwtNo5: 5,
-      drwtNo6: 6,
-      bnusNo: 7
+      resultCode: null,
+      resultMessage: null,
+      data: {
+        list: [
+          {
+            ltEpsd: 1,
+            tm1WnNo: 1,
+            tm2WnNo: 2,
+            tm3WnNo: 3,
+            tm4WnNo: 4,
+            tm5WnNo: 5,
+            tm6WnNo: 6,
+            bnsWnNo: 7
+          }
+        ]
+      }
     };
 
     (axios.get as AxiosMock).mockResolvedValueOnce({ data: mockData });
@@ -29,7 +37,11 @@ describe('getWinningNumbers', () => {
   });
 
   it('should throw an InvalidRound error if the round is invalid', async () => {
-    const mockData = { returnValue: 'fail' };
+    const mockData = {
+      resultCode: null,
+      resultMessage: null,
+      data: { list: [] }
+    };
 
     (axios.get as AxiosMock).mockResolvedValueOnce({ data: mockData });
     await expect(getWinningNumbers(0)).rejects.toThrowError(LottoError.InvalidRound());

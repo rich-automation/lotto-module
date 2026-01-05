@@ -3,7 +3,6 @@ import LottoError from './lottoError';
 import { SELECTORS } from './constants/selectors';
 import { createBrowserController } from './controllers/factory';
 import { URLS } from './constants/urls';
-import { deferred } from './utils/deferred';
 import { CONST } from './constants';
 import { lazyRun } from './utils/lazyRun';
 import Logger, { type LoggerInterface } from './logger';
@@ -76,53 +75,45 @@ export class LottoService implements LottoServiceInterface {
       throw LottoError.NotSupported('API mode does not support signIn.');
     }
 
-    const p = deferred<string>();
+    // 페이지 이동
+    const page = await this.browserController.focus(0);
+    this.logger.debug('[signIn]', 'goto', 'login page');
+    await page.goto(URLS.LOGIN);
+    this.logger.debug('[signIn]', 'page url', await page.url());
 
-    queueMicrotask(async () => {
-      // 페이지 이동
-      const page = await this.browserController.focus(0);
-      this.logger.debug('[signIn]', 'goto', 'login page');
-      await page.goto(URLS.LOGIN);
-      this.logger.debug('[signIn]', 'page url', await page.url());
+    // 로그인 시도
+    this.logger.debug('[signIn]', 'try login');
+    await page.fill(SELECTORS.ID_INPUT, id);
+    await page.fill(SELECTORS.PWD_INPUT, password);
+    await page.click(SELECTORS.LOGIN_BUTTON);
 
-      const unsubscribe = page.on('response', async response => {
-        const url = response.url();
+    // 결과 대기
+    await page.wait(CONST.BROWSER_LOGIN_WAIT);
 
-        switch (true) {
-          // 로그인 실패
-          case url.includes(URLS.LOGIN.replace('https://', '')): {
-            this.logger.info('[signIn]', 'fallback to login page', 'failure');
-            unsubscribe();
+    // 결과 확인
+    const currentUrl = await page.url();
 
-            p.reject(LottoError.CredentialsIncorrect());
-            break;
-          }
+    // 성공: MAIN URL로 이동됨
+    if (currentUrl.includes(URLS.MAIN)) {
+      this.logger.info('[signIn]', 'success');
+      this.context.authenticated = true;
 
-          // 로그인 성공
-          case url.includes(URLS.MAIN.replace('https://', '')): {
-            this.logger.info('[signIn]', 'fallback to main page', 'success');
-            this.context.authenticated = true;
-            unsubscribe();
+      this.logger.debug('[signIn]', 'clear popups');
+      await page.wait(CONST.BROWSER_PAGE_POPUP_WAIT);
+      await this.browserController.cleanPages([0]);
 
-            this.logger.debug('[signIn]', 'clear popups');
-            await page.wait(CONST.BROWSER_PAGE_POPUP_WAIT);
-            await this.browserController.cleanPages([0]);
+      return page.getCookies();
+    }
 
-            const cookies = await page.getCookies();
-            p.resolve(cookies);
-            break;
-          }
-        }
-      });
+    // 실패: 로그인 에러 팝업 확인
+    if (await page.exists(SELECTORS.LOGIN_ERROR_POPUP, CONST.LOGIN_ERROR_MESSAGE)) {
+      this.logger.info('[signIn]', 'failed', 'credentials incorrect');
+      throw LottoError.CredentialsIncorrect();
+    }
 
-      // 로그인 시도
-      this.logger.debug('[signIn]', 'try login');
-      await page.fill(SELECTORS.ID_INPUT, id);
-      await page.fill(SELECTORS.PWD_INPUT, password);
-      await page.click(SELECTORS.LOGIN_BUTTON);
-    });
-
-    return p.promise;
+    // 기타 실패
+    this.logger.info('[signIn]', 'failed', 'unknown');
+    throw LottoError.CredentialsIncorrect();
   };
 
   purchase = async (amount = 5) => {
