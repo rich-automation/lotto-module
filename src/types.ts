@@ -52,6 +52,8 @@ export interface BrowserPageInterface {
 
   querySelectorAll<T>(selector: string, callback: (elems: FakeDOMElement[]) => T): Promise<T>;
 
+  exists(selector: string, containsText?: string): Promise<boolean>;
+
   wait(time: number): Promise<void>;
 
   wait(type: 'load'): Promise<void>;
@@ -75,14 +77,20 @@ export type Unsubscribe = () => void;
 export type StringifiedCookies = string;
 
 export type GetWinningNumbersResponse = {
-  returnValue: 'success' | 'fail';
-  drwtNo1: number;
-  drwtNo2: number;
-  drwtNo3: number;
-  drwtNo4: number;
-  drwtNo5: number;
-  drwtNo6: number;
-  bnusNo: number;
+  resultCode: string | null;
+  resultMessage: string | null;
+  data: {
+    list: Array<{
+      ltEpsd: number;
+      tm1WnNo: number;
+      tm2WnNo: number;
+      tm3WnNo: number;
+      tm4WnNo: number;
+      tm5WnNo: number;
+      tm6WnNo: number;
+      bnsWnNo: number;
+    }>;
+  };
 };
 
 declare global {

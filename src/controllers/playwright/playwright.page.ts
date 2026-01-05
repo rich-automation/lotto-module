@@ -47,6 +47,15 @@ export class PlaywrightPage implements BrowserPageInterface {
     return this.page.$$eval(selector, callback);
   }
 
+  async exists(selector: string, containsText?: string): Promise<boolean> {
+    if (containsText) {
+      const count = await this.page.locator(selector).filter({ hasText: containsText }).count();
+      return count > 0;
+    }
+    const count = await this.page.locator(selector).count();
+    return count > 0;
+  }
+
   async getCookies() {
     const cookies = await this.context.cookies();
     return JSON.stringify(cookies);
