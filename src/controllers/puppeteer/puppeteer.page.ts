@@ -91,4 +91,8 @@ export class PuppeteerPage implements BrowserPageInterface {
     this.page.on(event, callback);
     return () => this.page.off(event, callback);
   }
+
+  async waitForSelector(selector: string, timeout = 10000) {
+    await this.page.waitForSelector(selector, { timeout });
+  }
 }

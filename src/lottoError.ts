@@ -15,7 +15,8 @@ const LottoErrorCode = {
   INVALID_ROUND: 300001,
   INVALID_LOTTO_NUMBER: 300002,
   NOT_AUTHENTICATED: 300003,
-  PURCHASE_UNAVAILABLE: 300004
+  PURCHASE_UNAVAILABLE: 300004,
+  PURCHASE_FAILED: 300005
 } as const;
 
 const ErrorCode = { ...BaseErrorCode, ...LoginErrorCode, ...LottoErrorCode };
@@ -32,6 +33,7 @@ const ErrorMessage: Record<ErrorCodeNumber, string> = {
   [ErrorCode.INVALID_LOTTO_NUMBER]: '로또 번호가 올바르지 않습니다.',
   [ErrorCode.NOT_AUTHENTICATED]: '인증되지 않았습니다.',
   [ErrorCode.PURCHASE_UNAVAILABLE]: '현재는 로또 구매가 불가능합니다.',
+  [ErrorCode.PURCHASE_FAILED]: '로또 구매에 실패했습니다.',
   [ErrorCode.NOT_SUPPORTED]: '지원되지 않는 기능입니다.'
 };
 
@@ -59,6 +61,9 @@ export default class LottoError extends Error {
   }
   static PurchaseUnavailable() {
     return new LottoError(ErrorCode.PURCHASE_UNAVAILABLE);
+  }
+  static PurchaseFailed(message?: string) {
+    return new LottoError(ErrorCode.PURCHASE_FAILED, message);
   }
   static NotSupported(message?: string) {
     return new LottoError(ErrorCode.NOT_SUPPORTED, message);

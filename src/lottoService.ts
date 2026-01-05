@@ -153,13 +153,27 @@ export class LottoService implements LottoServiceInterface {
     this.logger.debug('[purchase]', 'click purchase confirm button');
     await page.click(SELECTORS.PURCHASE_CONFIRM_BTN);
 
-    await page.wait(1000);
+    this.logger.debug('[purchase]', 'wait for purchase result');
+    try {
+      await page.waitForSelector(SELECTORS.PURCHASE_NUMBER_LIST, 5000);
+    } catch (e) {
+      this.logger.error('[purchase]', 'failed to wait for purchase result selector', SELECTORS.PURCHASE_NUMBER_LIST, e);
+      throw LottoError.PurchaseFailed('구매 결과 로딩 타임아웃');
+    }
 
     // game result
     const result = await page.querySelectorAll(SELECTORS.PURCHASE_NUMBER_LIST, elems => {
       return elems.map(it => Array.from(it.children).map(child => Number(child.innerHTML)));
     });
     this.logger.debug('[purchase]', 'print result', result);
+
+    if (result.length === 0 || result.some(nums => nums.length === 0)) {
+      this.logger.error('[purchase]', 'failed to parse purchase result', {
+        selector: SELECTORS.PURCHASE_NUMBER_LIST,
+        result
+      });
+      throw LottoError.PurchaseFailed('구매 결과 파싱 실패');
+    }
 
     return result;
   };

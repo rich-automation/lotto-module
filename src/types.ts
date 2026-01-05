@@ -60,6 +60,8 @@ export interface BrowserPageInterface {
 
   wait(type: 'idle'): Promise<void>;
 
+  waitForSelector(selector: string, timeout?: number): Promise<void>;
+
   getCookies(): Promise<StringifiedCookies>;
 
   setCookies(cookies: StringifiedCookies): Promise<void>;
