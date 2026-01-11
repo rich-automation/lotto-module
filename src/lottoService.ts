@@ -105,14 +105,36 @@ export class LottoService implements LottoServiceInterface {
       return page.getCookies();
     }
 
+    // 디버깅 정보 수집
+    const debugInfo = {
+      currentUrl,
+      isStillOnLoginPage: currentUrl.includes(URLS.LOGIN),
+      hasErrorPopup: await page.exists(SELECTORS.LOGIN_ERROR_POPUP),
+      hasLoginButton: await page.exists(SELECTORS.LOGIN_BUTTON),
+      hasIdInput: await page.exists(SELECTORS.ID_INPUT),
+      errorPopupMessage: null as string | null
+    };
+
+    // 에러 팝업 메시지 추출 시도
+    if (debugInfo.hasErrorPopup) {
+      try {
+        const messages = await page.querySelectorAll(SELECTORS.LOGIN_ERROR_POPUP, elems =>
+          elems.map(el => el.innerHTML.replace(/<[^>]*>/g, ' ').trim())
+        );
+        debugInfo.errorPopupMessage = messages.join(' | ');
+      } catch {
+        debugInfo.errorPopupMessage = '[failed to extract]';
+      }
+    }
+
     // 실패: 로그인 에러 팝업 확인
     if (await page.exists(SELECTORS.LOGIN_ERROR_POPUP, CONST.LOGIN_ERROR_MESSAGE)) {
-      this.logger.info('[signIn]', 'failed', 'credentials incorrect');
+      this.logger.info('[signIn]', 'failed', 'credentials incorrect', debugInfo);
       throw LottoError.CredentialsIncorrect();
     }
 
     // 기타 실패
-    this.logger.info('[signIn]', 'failed', 'unknown');
+    this.logger.warn('[signIn]', 'failed', 'unknown reason', debugInfo);
     throw LottoError.CredentialsIncorrect();
   };
 
