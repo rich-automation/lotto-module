@@ -20,6 +20,7 @@ yarn add @rich-automation/lotto
 
 1. 내부적으로 Playwright 또는 Puppeteer를 사용하므로, Chromium이 사전에 설치되어 있어야 합니다. ([링크](https://github.com/rich-automation/lotto-module/blob/main/package.json#L38-L39))
 2. 구매는 [동행복권](https://dhlottery.co.kr/common.do?method=main) 사이트에서 진행되며, 예치금 충전 기능은 없으므로 미리 계정에 예치금을 충전해두어야 합니다.
+3. 건전 구매 서약서에 동의하세요 (https://www.dhlottery.co.kr/hpns/sdnsCamPainView), 1년 주기로 동의가 필요합니다.
 
 ## 사용법
 
