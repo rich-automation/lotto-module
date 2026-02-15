@@ -17,8 +17,9 @@ export class PuppeteerPage implements BrowserPageInterface {
     return this.page.url();
   }
 
-  async goto(url: string) {
-    await this.page.goto(url, { waitUntil: 'load' });
+  async goto(url: string, options?: { waitUntil?: 'load' | 'idle' }) {
+    const waitUntil = options?.waitUntil === 'idle' ? 'networkidle0' : 'load';
+    await this.page.goto(url, { waitUntil });
   }
 
   async fill(selector: string, value: string | number) {

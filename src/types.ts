@@ -44,7 +44,7 @@ export interface BrowserControllerInterface<T extends BrowserController = Browse
 export interface BrowserPageInterface {
   url(): Promise<string>;
 
-  goto(url: string): Promise<void>;
+  goto(url: string, options?: { waitUntil?: 'load' | 'idle' }): Promise<void>;
 
   fill(selector: string, value: string | number): Promise<void>;
   click(selector: string, domDirect?: boolean): Promise<void>;

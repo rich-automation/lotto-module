@@ -75,10 +75,10 @@ export class LottoService implements LottoServiceInterface {
       throw LottoError.NotSupported('API mode does not support signIn.');
     }
 
-    // 페이지 이동
+    // 페이지 이동 (RSA 키 로딩 등 비동기 스크립트 완료까지 대기)
     const page = await this.browserController.focus(0);
     this.logger.debug('[signIn]', 'goto', 'login page');
-    await page.goto(URLS.LOGIN);
+    await page.goto(URLS.LOGIN, { waitUntil: 'idle' });
     this.logger.debug('[signIn]', 'page url', await page.url());
 
     // 로그인 시도
