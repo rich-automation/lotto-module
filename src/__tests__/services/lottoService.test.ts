@@ -2,14 +2,14 @@ import * as dotenv from 'dotenv';
 import puppeteer from 'puppeteer';
 import { chromium } from 'playwright';
 
-import LottoError from '../lottoError';
-import { seconds } from '../utils/seconds';
-import { LogLevel } from '../logger';
-import { lazyRun } from '../utils/lazyRun';
-import type { BrowserConfigs, BrowserPageInterface } from '../types';
-import { getCheckWinningLink } from '../utils/getCheckWinningLink';
-import { getNextLottoRound } from '../utils/getNextLottoRound';
-import { LottoService } from '../lottoService';
+import LottoError from '../../lottoError';
+import { seconds } from '../../utils/seconds';
+import { LogLevel } from '../../logger';
+import { lazyRun } from '../../utils/lazyRun';
+import type { BrowserConfigs, BrowserPageInterface } from '../../types';
+import { getCheckWinningLink } from '../../utils/getCheckWinningLink';
+import { getNextLottoRound } from '../../utils/getNextLottoRound';
+import { LottoService } from '../../services/lottoService';
 
 dotenv.config();
 const { LOTTO_ID, LOTTO_PWD, LOTTO_COOKIE } = process.env;
@@ -210,11 +210,15 @@ describe.each([
     });
 
     it('should purchase lotto game (mock)', async () => {
+      // 구매 가능한 시간으로 설정 (월요일 12:00 KST)
+      jest.spyOn(Date, 'now').mockReturnValue(new Date('Mon Apr 24 2023 12:00:00 GMT+0900').getTime());
+
       const mockPage = {
         goto: jest.fn(),
         click: jest.fn(),
         select: jest.fn(),
         wait: jest.fn(),
+        waitForSelector: jest.fn(),
         querySelectorAll: jest.fn(() => [[1, 2, 3, 4, 5, 6]])
       } as unknown as BrowserPageInterface;
 
@@ -227,7 +231,7 @@ describe.each([
       expect(mockPage.goto).toHaveBeenCalled();
       expect(mockPage.click).toHaveBeenCalled();
       expect(mockPage.select).toHaveBeenCalled();
-      expect(mockPage.wait).toHaveBeenCalled();
+      expect(mockPage.waitForSelector).toHaveBeenCalled();
       expect(mockPage.querySelectorAll).toHaveBeenCalled();
 
       expect(numbers).toHaveLength(1);

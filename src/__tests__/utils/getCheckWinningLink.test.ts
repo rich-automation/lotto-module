@@ -9,6 +9,6 @@ describe('getCheckWinningLink', () => {
       ],
       1000
     );
-    expect(link).toEqual('https://dhlottery.co.kr/qr.do?method=winQr&v=1000q010203040506q070809101112');
+    expect(link).toEqual('https://www.dhlottery.co.kr/qr.do?method=winQr&v=1000q010203040506q070809101112');
   });
 });

@@ -19,6 +19,17 @@
   "main": "lib/cjs/index",
   "module": "lib/esm/index",
   "types": "lib/typescript/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/typescript/index.d.ts",
+      "import": "./lib/esm/index.js",
+      "require": "./lib/cjs/index.js"
+    },
+    "./react-native": {
+      "types": "./lib/typescript/index.native.d.ts",
+      "import": "./lib/esm/index.native.js"
+    }
+  },
   "files": [
     "lib",
     "package.json",
@@ -29,11 +40,12 @@
     "prepack": "yarn build",
     "release:ci": "release-it --ci --npm.skipChecks",
     "release:ci:test": "release-it --ci --npm.skipChecks --dry-run",
-    "start": "ts-node ./example/app",
-    "build": "rm -rf lib && yarn build:cjs && yarn build:esm && yarn build:dts",
+    "start": "TS_NODE_PROJECT=tsconfig.base.json ts-node ./example/app",
+    "build": "rm -rf lib && yarn build:cjs && yarn build:esm && yarn build:dts && yarn build:native",
     "build:cjs": "tsc --project tsconfig.cjs.json --verbatimModuleSyntax false && echo '{\"type\": \"commonjs\"}' > lib/cjs/package.json",
     "build:esm": "tsc --project tsconfig.esm.json && echo '{\"type\": \"module\"}' > lib/esm/package.json",
-    "build:dts": "tsc --project tsconfig.json --emitDeclarationOnly --declaration --declarationDir lib/typescript",
+    "build:dts": "tsc --project tsconfig.base.json --emitDeclarationOnly --declaration --declarationDir lib/typescript",
+    "build:native": "tsc --project tsconfig.native.json",
     "test": "jest --forceExit --detectOpenHandles",
     "install:puppeteer": "node ./node_modules/puppeteer/install.mjs",
     "install:playwright": "npx playwright install chromium --with-deps",
@@ -41,7 +53,7 @@
     "fix:eslint": "eslint --fix src --ext js,jsx,ts,tsx ",
     "fix:prettier": "prettier --write \"src/**/*.{ts,tsx,js}\"",
     "lint": "yarn lint:ts && yarn lint:eslint && yarn lint:prettier",
-    "lint:ts": "tsc --noEmit",
+    "lint:ts": "tsc --noEmit -p tsconfig.base.json && tsc --noEmit -p tsconfig.native.json",
     "lint:eslint": "eslint src --ext js,jsx,ts,tsx ",
     "lint:prettier": "prettier --check \"src/**/*.{ts,tsx,js}\""
   },
@@ -51,13 +63,24 @@
   },
   "peerDependencies": {
     "playwright": "^1.35.0",
-    "puppeteer": "^20.5.0"
+    "puppeteer": "^20.5.0",
+    "react": "^19.1.0",
+    "react-native-webview": "^13.0.0"
   },
   "peerDependenciesMeta": {
     "playwright": {
       "optional": true
     },
     "puppeteer": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    },
+    "react-native-webview": {
       "optional": true
     }
   },
@@ -66,6 +89,7 @@
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-typescript": "^7.21.4",
     "@types/jest": "^29.5.0",
+    "@types/react": "^19.2.14",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
     "babel-jest": "^29.5.0",
@@ -77,6 +101,8 @@
     "playwright": "^1.51.1",
     "prettier": "^2.8.7",
     "puppeteer": "^24.6.1",
+    "react-native": "^0.84.0",
+    "react-native-webview": "^13.16.0",
     "release-it": "^15.10.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"

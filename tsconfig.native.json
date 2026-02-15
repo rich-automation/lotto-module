@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "types": ["react", "react-native"],
+    "composite": true,
+    "declaration": true,
+    "module": "ESNext",
+    "rootDir": "src",
+    "outDir": "lib/esm",
+    "declarationDir": "lib/typescript"
+  },
+  "include": [
+    "src/index.native.ts",
+    "src/services/lottoService.core.ts",
+    "src/controllers/webview/**/*",
+    "src/types.ts",
+    "src/logger.ts",
+    "src/lottoError.ts",
+    "src/utils/**/*",
+    "src/constants/**/*",
+    "src/apis/**/*"
+  ],
+  "exclude": ["lib", "node_modules", "**/__tests__/**"]
+}

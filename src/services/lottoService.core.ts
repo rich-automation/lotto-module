@@ -1,20 +1,19 @@
-import type { BrowserConfigs, BrowserControllerInterface, LottoServiceInterface } from './types';
-import LottoError from './lottoError';
-import { SELECTORS } from './constants/selectors';
-import { createBrowserController } from './controllers/factory';
-import { URLS } from './constants/urls';
-import { CONST } from './constants';
-import { lazyRun } from './utils/lazyRun';
-import Logger, { type LoggerInterface } from './logger';
-import { getLastLottoRound } from './utils/getLastLottoRound';
-import { validateLottoNumber } from './utils/validateLottoNumber';
-import { getWinningNumbers } from './apis/dhlottery/getWinningNumbers';
-import { checkWinning } from './utils/checkWinning';
-import { validatePurchaseAvailability } from './utils/validatePurchaseAvailability';
-import { getCheckWinningLink } from './utils/getCheckWinningLink';
-import { getNextLottoRound } from './utils/getNextLottoRound';
+import type { BrowserControllerInterface, LottoServiceInterface } from '../types';
+import LottoError from '../lottoError';
+import { SELECTORS } from '../constants/selectors';
+import { URLS } from '../constants/urls';
+import { CONST } from '../constants';
+import { lazyRun } from '../utils/lazyRun';
+import type { LoggerInterface } from '../logger';
+import { getLastLottoRound } from '../utils/getLastLottoRound';
+import { validateLottoNumber } from '../utils/validateLottoNumber';
+import { getWinningNumbers } from '../apis/dhlottery/getWinningNumbers';
+import { checkWinning } from '../utils/checkWinning';
+import { validatePurchaseAvailability } from '../utils/validatePurchaseAvailability';
+import { getCheckWinningLink } from '../utils/getCheckWinningLink';
+import { getNextLottoRound } from '../utils/getNextLottoRound';
 
-export class LottoService implements LottoServiceInterface {
+export class LottoServiceCore implements LottoServiceInterface {
   context = {
     authenticated: false
   };
@@ -22,15 +21,9 @@ export class LottoService implements LottoServiceInterface {
   browserController: BrowserControllerInterface;
   logger: LoggerInterface;
 
-  constructor(configs: BrowserConfigs) {
-    this.logger = new Logger(configs.logLevel, '[LottoService]');
-    this.browserController = createBrowserController(
-      {
-        defaultViewport: { width: 1080, height: 1024 },
-        ...configs
-      },
-      this.logger
-    );
+  constructor(controller: BrowserControllerInterface, logger: LoggerInterface) {
+    this.browserController = controller;
+    this.logger = logger;
   }
 
   destroy = async () => {

@@ -2,8 +2,10 @@ import { PuppeteerController } from './puppeteer';
 import type { BrowserConfigs, BrowserController, BrowserControllerInterface } from '../types';
 import type { LoggerInterface } from '../logger';
 import { PlaywrightController } from './playwright';
+import { WebViewController } from './webview';
 import type { BrowserType } from 'playwright-core';
 import type { PuppeteerNode } from 'puppeteer';
+import type { WebViewBridge } from './webview/types';
 import { APIModeController } from './api';
 
 export function createBrowserController<T extends BrowserController>(
@@ -12,6 +14,10 @@ export function createBrowserController<T extends BrowserController>(
 ): BrowserControllerInterface {
   if (isAPIMode(configs)) {
     return new APIModeController(configs, logger);
+  }
+
+  if (isWebView(configs)) {
+    return new WebViewController(configs, logger);
   }
 
   if (isPlaywright(configs)) {
@@ -27,6 +33,12 @@ export function createBrowserController<T extends BrowserController>(
 
 function isAPIMode(configs: BrowserConfigs): configs is BrowserConfigs<'api'> {
   return configs.controller === 'api';
+}
+
+function isWebView(configs: BrowserConfigs): configs is BrowserConfigs<WebViewBridge> {
+  return (
+    typeof configs.controller === 'object' && '__type' in configs.controller && configs.controller.__type === 'webview'
+  );
 }
 
 function isPlaywright(configs: BrowserConfigs): configs is BrowserConfigs<BrowserType> {

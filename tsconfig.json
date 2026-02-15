@@ -1,36 +1,7 @@
 {
-  "ts-node": {
-    "esm": true,
-    "compilerOptions": {
-      "target": "es6",
-      "lib": ["esnext"],
-      "module": "esnext"
-    }
-  },
-  "compilerOptions": {
-    "target": "es6",
-    "lib": ["esnext"],
-    "module": "esnext",
-    "outDir": "./lib",
-    "moduleResolution": "node",
-    "strict": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "verbatimModuleSyntax": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noImplicitUseStrict": false,
-    "noImplicitOverride": true,
-    "noStrictGenericChecks": false,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true
-  },
-  "include": ["src"],
-  "exclude": ["lib", "node_modules", "**/__tests__/**"]
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.base.json" },
+    { "path": "./tsconfig.native.json" }
+  ]
 }
