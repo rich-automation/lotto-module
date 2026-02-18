@@ -12,7 +12,8 @@
   },
   "include": [
     "src/index.native.ts",
-    "src/services/lottoService.core.ts",
+    "src/services/lottoService.base.ts",
+    "src/services/lottoServiceMobile.ts",
     "src/controllers/webview/**/*",
     "src/types.ts",
     "src/logger.ts",

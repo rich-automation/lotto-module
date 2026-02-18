@@ -4,7 +4,7 @@ import { WebView } from 'react-native-webview';
 import type { WebViewMessageEvent, WebViewNavigation } from 'react-native-webview';
 import type { WebViewBridge } from './controllers/webview/types';
 import { BRIDGE_SCRIPT } from './controllers/webview/bridgeScript';
-import { LottoServiceCore } from './services/lottoService.core';
+import { LottoServiceMobile } from './services/lottoServiceMobile';
 import { WebViewController } from './controllers/webview';
 import type { LottoServiceInterface } from './types';
 import Logger, { type LogLevel } from './logger';
@@ -148,7 +148,7 @@ export function useLottoService(options: UseLottoServiceOptions = {}): UseLottoS
     const logger = new Logger(logLevelRef.current, '[LottoService]');
     const configs = { controller: bridge, logLevel: logLevelRef.current };
     const controller = new WebViewController(configs, logger);
-    return new LottoServiceCore(controller, logger);
+    return new LottoServiceMobile(controller, logger);
   }, [bridge]);
 
   // Cleanup
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
 });
 
 // Re-export useful types and utils
-export { LottoServiceCore } from './services/lottoService.core';
+export { LottoServiceMobile } from './services/lottoServiceMobile';
 export { LogLevel } from './logger';
 export type { LottoServiceInterface, BrowserConfigs } from './types';
 export { getLastLottoRound } from './utils/getLastLottoRound';
