@@ -7,118 +7,79 @@ on:
     branches:
       - main
 env:
-  CACHE_NODE_MODULES_PATH: |
-    node_modules
+  CACHE_BROWSER_PATHS: |
     ~/.cache/puppeteer/chrome
     ~/.cache/ms-playwright
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [lts/*]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Get lockfile hash
-        id: lockfile_hash
-        run: echo "hash=${{ hashFiles('**/yarn.lock') }}" >> $GITHUB_OUTPUT
-
-      - name: Check cached node_modules
-        id: check_cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.CACHE_NODE_MODULES_PATH }}
-          key: ${{ steps.lockfile_hash.outputs.hash }}
-
-      - name: Install dependencies
-        if: steps.check_cache.outputs.cache-hit == ''
-        run: yarn install --frozen-lockfile
-
-      - name: Install puppeteer
-        if: steps.check_cache.outputs.cache-hit == ''
-        run: yarn install:puppeteer
-
-      - name: Install playwright
-        if: steps.check_cache.outputs.cache-hit == ''
-        run: yarn install:playwright
-    outputs:
-      cache_node_modules_key: ${{ steps.lockfile_hash.outputs.hash }}
-
   run-lint:
-    needs: prepare
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [lts/*]
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v5
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Check cached node_modules
-        uses: actions/cache@v4
+          version: 10.33.0
+          run_install: false
+      - name: Use Node.js 24
+        uses: actions/setup-node@v6
         with:
-          path: ${{ env.CACHE_NODE_MODULES_PATH }}
-          key: ${{ needs.prepare.outputs.cache_node_modules_key }}
-
+          node-version: '24'
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Run lint
-        run: yarn lint
+        run: pnpm lint
 
   run-build:
-    needs: prepare
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [lts/*]
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v5
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Check cached node_modules
-        uses: actions/cache@v4
+          version: 10.33.0
+          run_install: false
+      - name: Use Node.js 24
+        uses: actions/setup-node@v6
         with:
-          path: ${{ env.CACHE_NODE_MODULES_PATH }}
-          key: ${{ needs.prepare.outputs.cache_node_modules_key }}
-
+          node-version: '24'
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Run build
-        run: yarn build
+        run: pnpm build
 
   run-test:
-    needs: prepare
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [lts/*]
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v5
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Check cached node_modules
-        uses: actions/cache@v4
+          version: 10.33.0
+          run_install: false
+      - name: Use Node.js 24
+        uses: actions/setup-node@v6
         with:
-          path: ${{ env.CACHE_NODE_MODULES_PATH }}
-          key: ${{ needs.prepare.outputs.cache_node_modules_key }}
-
+          node-version: '24'
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Restore browser cache
+        id: browser_cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.CACHE_BROWSER_PATHS }}
+          key: ${{ runner.os }}-browser-cache-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install puppeteer
+        if: steps.browser_cache.outputs.cache-hit != 'true'
+        run: pnpm install:puppeteer
+      - name: Install playwright
+        if: steps.browser_cache.outputs.cache-hit != 'true'
+        run: pnpm install:playwright
       - name: Run test
-        env:
-          LOTTO_ID: ${{ secrets.lotto_id }}
-          LOTTO_PWD: ${{ secrets.lotto_pwd }}
-          LOTTO_COOKIE: ${{ secrets.lotto_cookie }}
-        run: yarn test --verbose --collect-coverage
+        run: pnpm run test:ci
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3

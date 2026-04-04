@@ -92,6 +92,6 @@ export class WebViewPage implements BrowserPageInterface {
 
   on(_event: BrowserPageEvents, _callback: (...args: unknown[]) => void): Unsubscribe {
     this.logger?.warn('[WebViewPage]', 'on() is not supported in WebView controller');
-    return () => {};
+    return () => undefined;
   }
 }

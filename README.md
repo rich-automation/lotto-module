@@ -12,8 +12,8 @@
 # npm
 npm install @rich-automation/lotto
 
-# yarn
-yarn add @rich-automation/lotto
+# pnpm
+pnpm add @rich-automation/lotto
 ```
 
 ## 준비 사항

@@ -27,7 +27,9 @@ export function useLottoService(options: UseLottoServiceOptions = {}): UseLottoS
   const { headless = true, logLevel } = options;
 
   const webviewRef = useRef<WebView>(null);
-  const pendingCalls = useRef<Map<string, { resolve: (v: unknown) => void; reject: (e: Error) => void; timer: ReturnType<typeof setTimeout> }>>(new Map());
+  const pendingCalls = useRef<
+    Map<string, { resolve: (v: unknown) => void; reject: (e: Error) => void; timer: ReturnType<typeof setTimeout> }>
+  >(new Map());
   const inflightCalls = useRef<Map<string, Promise<unknown>>>(new Map());
   const navigationPromise = useRef<{ resolve: () => void } | null>(null);
   const currentUrl = useRef('');
@@ -60,10 +62,13 @@ export function useLottoService(options: UseLottoServiceOptions = {}): UseLottoS
   }, []);
 
   // 네비게이션 상태 추적
-  const handleNavigationStateChange = useCallback((navState: WebViewNavigation) => {
-    currentUrl.current = navState.url;
-    if (!navState.loading) resolveNavigation();
-  }, [resolveNavigation]);
+  const handleNavigationStateChange = useCallback(
+    (navState: WebViewNavigation) => {
+      currentUrl.current = navState.url;
+      if (!navState.loading) resolveNavigation();
+    },
+    [resolveNavigation]
+  );
 
   // WebView 로드 완료
   const handleLoadEnd = useCallback(() => {

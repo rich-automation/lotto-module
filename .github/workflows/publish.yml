@@ -15,18 +15,21 @@ jobs:
       contents: write
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v5
+        with:
+          version: 10.33.0
+          run_install: false
+      - uses: actions/setup-node@v6
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
-          cache: yarn
-      - name: 'pin npm for trusted publishing'
-        run: npm install --global npm@11.5.1
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
       - name: 'set git identity'
         run: |
           git config --global user.name "github-actions[bot]"
@@ -36,4 +39,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
         run: |
-          yarn release-it ${{ github.event.inputs.version }} --ci --npm.skipChecks
+          pnpm exec release-it ${{ github.event.inputs.version }} --ci --npm.skipChecks

@@ -96,7 +96,10 @@ describe('WebViewPage', () => {
   });
 
   it('should call bridge.call("querySelectorAll") and apply callback', async () => {
-    const fakeElems = [{ innerHTML: '1', children: [] }, { innerHTML: '2', children: [] }];
+    const fakeElems = [
+      { innerHTML: '1', children: [] },
+      { innerHTML: '2', children: [] }
+    ];
     mockBridge.call.mockResolvedValue(fakeElems);
 
     const result = await page.querySelectorAll('#list li', elems => elems.map(el => el.innerHTML));
