@@ -11,19 +11,29 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v3
-      - run: yarn install --immutable
-      - name: 'set environments'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          cache: yarn
+      - name: 'pin npm for trusted publishing'
+        run: npm install --global npm@11.5.1
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      - name: 'set git identity'
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" >> .npmrc
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
       - name: 'publish to npm'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
         run: |
           yarn release-it ${{ github.event.inputs.version }} --ci --npm.skipChecks

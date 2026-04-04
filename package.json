@@ -2,6 +2,7 @@
   "name": "@rich-automation/lotto",
   "version": "2.1.0",
   "description": "Lotto module",
+  "repository": "https://github.com/rich-automation/lotto-module",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
