@@ -110,26 +110,33 @@ console.log(link); // "https://dhlottery.co.kr/qr.do?method=winQr&v=1071q0102030
 
 ## API
 
-### `signIn(id: string, password: string): Promise<string>`
+`LottoService`는 브라우저 기반 메서드와 API 전용 메서드로 나뉩니다.
 
-동행복권 로그인, 성공 시 로그인 쿠키 반환
+### 인증 / 세션
 
-### `signInWithCookie(cookies: string): Promise<string>`
+- `signIn(id: string, password: string): Promise<string>`
+  동행복권 계정으로 로그인하고, 성공 시 재사용 가능한 쿠키 문자열을 반환합니다.
+- `signInWithCookie(cookies: string): Promise<string>`
+  이미 저장된 쿠키로 세션을 복구하고, 유효한 경우 최신 쿠키 문자열을 반환합니다.
 
-쿠키 기반 로그인
+### 구매
 
-### `purchase(amount?: number): Promise<number[][]>`
+- `purchase(amount?: number): Promise<number[][]>`
+  로그인된 상태에서 로또를 자동 구매합니다. `amount`는 1~5 게임이며, 반환값은 구매된 번호 목록입니다.
 
-로또 번호 자동 구매 (1~5 게임)
+### 조회
 
-### `check(numbers: number[][], round?: number): Promise<{ rank:number; matchedNumbers:number[] }[]>`
+- `check(numbers: number[][], round?: number): Promise<{ rank: number; matchedNumbers: number[] }[]>`
+  당첨 결과를 조회합니다. `round`를 생략하면 직접 현재 회차를 계산해서 넘기는 방식을 권장합니다.
+- `getCheckWinningLink(numbers: number[][], round?: number): string`
+  동행복권 당첨 확인 페이지 링크를 생성합니다.
 
-(API) 당첨 결과 확인
+### 정리
 
-### `getCheckWinningLink(numbers: number[][], round?: number): string`
+- `destroy(): Promise<void>`
+  내부 브라우저 인스턴스를 정리합니다. 브라우저 컨트롤러 사용 시 마지막에 호출하는 편이 안전합니다.
 
-(API) 당첨 확인 링크 생성
+### API 모드 제한
 
-### `destroy(): Promise<void>`
-
-브라우저 인스턴스 종료
+- `controller: 'api'` 모드에서는 `check`, `getCheckWinningLink`만 사용할 수 있습니다.
+- `signIn`, `signInWithCookie`, `purchase`는 브라우저 컨트롤러(`playwright`, `puppeteer`)가 필요합니다.

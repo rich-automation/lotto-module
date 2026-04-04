@@ -67,7 +67,7 @@ export interface BrowserPageInterface {
 
   setCookies(cookies: StringifiedCookies): Promise<void>;
 
-  on(event: BrowserPageEvents, callback: (...args: any[]) => void): Unsubscribe;
+  on(event: BrowserPageEvents, callback: (...args: unknown[]) => void): Unsubscribe;
 }
 
 export type FakeDOMElement = {
