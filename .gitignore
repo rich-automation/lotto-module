@@ -5,6 +5,7 @@ lib
 .env
 !.env.example
 .npmrc
+*.tsbuildinfo
 /test-results/
 /playwright-report/
 /playwright/.cache/

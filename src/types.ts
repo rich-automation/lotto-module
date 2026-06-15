@@ -8,11 +8,11 @@ export interface LottoServiceInterface {
 
   signIn(id: string, password: string): Promise<string>;
 
-  signInWithCookie(cookie: string): Promise<string>;
+  signInWithCookie(cookies: string): Promise<string>;
 
-  check(numbers: number[][], volume?: number): Promise<{ rank: number; matchedNumbers: number[] }[]>;
+  check(numbers: number[][], round?: number): Promise<{ rank: number; matchedNumbers: number[] }[]>;
 
-  purchase(amount: number): Promise<number[][]>;
+  purchase(amount?: number): Promise<number[][]>;
 
   getCheckWinningLink(numbers: number[][], round: number): string;
 }
