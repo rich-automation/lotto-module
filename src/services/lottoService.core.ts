@@ -145,10 +145,17 @@ export class LottoServiceCore implements LottoServiceInterface {
     const page = await this.browserController.focus(0);
     await page.goto(URLS.LOTTO_645);
 
-    // remove alert in linux env (비정상적인 방법으로 접속)
+    // remove alert in CI env (비정상적인 방법으로 접속)
+    // 팝업 마크업은 항상 DOM에 존재하지만 노출 여부는 환경에 따라 다르므로,
+    // 15초 안에 표시되지 않으면 없는 것으로 간주하고 진행한다.
     if (process.env.CI) {
-      this.logger.debug('[purchase]', 'click environment alert confirm');
-      await page.click(SELECTORS.ENVIRONMENT_ALERT_CONFIRM);
+      try {
+        await page.waitForSelector(SELECTORS.ENVIRONMENT_ALERT_CONFIRM, 15000);
+        this.logger.debug('[purchase]', 'click environment alert confirm');
+        await page.click(SELECTORS.ENVIRONMENT_ALERT_CONFIRM);
+      } catch {
+        this.logger.debug('[purchase]', 'environment alert not shown within 15s, skip');
+      }
     }
 
     // click auto button
