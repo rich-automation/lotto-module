@@ -1,4 +1,4 @@
-import type { BrowserControllerInterface, LottoServiceInterface } from '../types';
+import type { BrowserControllerInterface, BrowserPageInterface, LottoServiceInterface } from '../types';
 import LottoError from '../lottoError';
 import { SELECTORS } from '../constants/selectors';
 import { URLS } from '../constants/urls';
@@ -34,6 +34,25 @@ export class LottoServiceCore implements LottoServiceInterface {
     return lazyRun(this.browserController.close, CONST.BROWSER_DESTROY_SAFE_TIMEOUT);
   };
 
+  /**
+   * 장기간 비밀번호 미변경 시 로그인 직후 비밀번호 변경 안내 페이지(/mbrsrvc/ExpryPswdNoti)로
+   * 리다이렉트된다. "다음에 변경" 버튼을 눌러 유예하면 로그인이 완료된다.
+   * 안내 페이지가 아니면 아무 동작도 하지 않는다.
+   */
+  private deferPasswordChangeIfNeeded = async (page: BrowserPageInterface) => {
+    const currentUrl = await page.url();
+    if (!currentUrl.includes(URLS.PASSWORD_EXPIRY_NOTICE)) return;
+
+    this.logger.info('[signIn]', 'password expiry notice detected, deferring password change');
+    if (!(await page.exists(SELECTORS.PASSWORD_EXPIRY_DEFER_BTN))) {
+      this.logger.warn('[signIn]', 'password expiry defer button not found');
+      return;
+    }
+
+    await page.click(SELECTORS.PASSWORD_EXPIRY_DEFER_BTN);
+    await page.wait(CONST.BROWSER_LOGIN_WAIT);
+  };
+
   signInWithCookie = async (cookies: string) => {
     if (this.browserController.configs.controller === 'api') {
       throw LottoError.NotSupported('API mode does not support signInWithCookie.');
@@ -51,6 +70,9 @@ export class LottoServiceCore implements LottoServiceInterface {
     this.logger.debug('[signInWithCookie]', 'clear popups');
     await page.wait(CONST.BROWSER_PAGE_POPUP_WAIT);
     await this.browserController.cleanPages([0]);
+
+    // 비밀번호 변경 안내(만료) 페이지면 "다음에 변경"으로 유예하고 진행
+    await this.deferPasswordChangeIfNeeded(page);
 
     // 로그인이 되지 않았으면 에러처리
     if (URLS.LOGIN === (await page.url())) {
@@ -82,6 +104,9 @@ export class LottoServiceCore implements LottoServiceInterface {
 
     // 결과 대기
     await page.wait(CONST.BROWSER_LOGIN_WAIT);
+
+    // 비밀번호 변경 안내(만료) 페이지면 "다음에 변경"으로 유예하고 진행
+    await this.deferPasswordChangeIfNeeded(page);
 
     // 결과 확인
     const currentUrl = await page.url();
