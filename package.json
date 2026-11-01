@@ -42,7 +42,7 @@
     "release:ci": "release-it --ci --npm.skipChecks",
     "release:ci:test": "release-it --ci --npm.skipChecks --dry-run",
     "start": "TS_NODE_PROJECT=tsconfig.base.json ts-node ./example/app",
-    "build": "rm -rf lib && npm run build:cjs && npm run build:esm && npm run build:dts && npm run build:native",
+    "build": "rm -rf lib && rm -f tsconfig.*.tsbuildinfo && npm run build:cjs && npm run build:esm && npm run build:dts && npm run build:native",
     "build:cjs": "tsc --project tsconfig.cjs.json --verbatimModuleSyntax false && echo '{\"type\": \"commonjs\"}' > lib/cjs/package.json",
     "build:esm": "tsc --project tsconfig.esm.json && echo '{\"type\": \"module\"}' > lib/esm/package.json",
     "build:dts": "tsc --project tsconfig.base.json --emitDeclarationOnly --declaration --declarationDir lib/typescript",
