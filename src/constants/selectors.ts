@@ -3,6 +3,7 @@ export const SELECTORS = {
   PWD_INPUT: '#inpUserPswdEncn',
   LOGIN_BUTTON: '#btnLogin',
   LOGIN_ERROR_POPUP: '.msgPop[role="alertdialog"]',
+  PASSWORD_EXPIRY_DEFER_BTN: '#btnCancel',
   ENVIRONMENT_ALERT_CONFIRM: 'input[value="확인"][onclick="javascript:closepopupLayerAlert();"]',
   PURCHASE_TYPE_RANDOM_BTN: 'a[href="#divWay2Buy1"]#num2',
   PURCHASE_AMOUNT_SELECT: 'select#amoundApply',
